@@ -1,0 +1,13 @@
+{
+    "name": "Notifier",
+    "alias": "notifier",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Notifier\\Providers\\NotifierServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

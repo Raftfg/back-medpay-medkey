@@ -1,0 +1,5 @@
++ Tester les fonctionnalités avec Postman avant de continuer la mise en place des autres modules
+- Faire le startup du frontebnd avec les fonctionnalités déjà programmées pour être au même niveau
+- Découper le backend en modules
+- Faire les migrations (dictionnaire de données)
+- Faire 

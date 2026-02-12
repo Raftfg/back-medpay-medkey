@@ -1,0 +1,11 @@
+{
+    "name": "Recouvrement",
+    "alias": "recouvrement",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Recouvrement\\Providers\\RecouvrementServiceProvider"
+    ],
+    "files": []
+}

@@ -1,0 +1,11 @@
+{
+    "name": "Movment",
+    "alias": "movment",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Movment\\Providers\\MovmentServiceProvider"
+    ],
+    "files": []
+}

@@ -1,0 +1,11 @@
+{
+    "name": "Hospitalization",
+    "alias": "hospitalization",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Hospitalization\\Providers\\HospitalizationServiceProvider"
+    ],
+    "files": []
+}

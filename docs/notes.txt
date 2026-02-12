@@ -1,0 +1,10 @@
+=== supprimer cache vue ===
+php artisan view:clear
+php artisan cache:clear
+php artisan config:clear
+php artisan config:cache
+----------
+php artisan optimize:clear
+----------
+/usr/local/bin/php /home/apiagrotracer/public_html/artisan schedule:run >> /dev/null 2>&1
+----------

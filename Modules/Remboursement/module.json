@@ -1,0 +1,11 @@
+{
+    "name": "Remboursement",
+    "alias": "remboursement",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Remboursement\\Providers\\RemboursementServiceProvider"
+    ],
+    "files": []
+}

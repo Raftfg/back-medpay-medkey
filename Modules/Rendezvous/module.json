@@ -1,0 +1,14 @@
+{
+    "name": "Rendezvous",
+    "alias": "rendezvous",
+    "description": "Module de planification et gestion des rendez-vous médicaux (planning, créneaux, rappels, optimisation).",
+    "keywords": ["appointments", "planning", "rendezvous"],
+    "priority": 0,
+    "providers": [
+        "Modules\\Rendezvous\\Providers\\RendezvousServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}
+
