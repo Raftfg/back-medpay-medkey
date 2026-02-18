@@ -2,9 +2,14 @@
 
 ## 📌 Contexte du Projet
 
+MedKey est une plateforme de gestion des systeme d'information hospitalier qui vise à dématérialiser la gestion des recettes sanitaires et assurer la transparence dans la gestion de tout l'hopital. Son objectif est de simplifier et d'optimiser la gestion des opérations financières liées aux soins de santé.
+
+Elle permet à l'hôpital de gérer électroniquement toutes les transactions financières liées aux soins de santé, telles que la facturation, la gestion des paiements, la gestion des patients, la gestion de la carte sanitaire, la gestion des actes médicaux et la gestion de la trésorerie.
+
 **Medkey** est une plateforme backend robuste basée sur **Laravel 10**, dédiée à la gestion des Dossiers Médicaux Électroniques (DME). Sa particularité réside dans son architecture **Multi-Tenant**, permettant à une seule instance de l'application de servir plusieurs établissements hospitaliers de manière isolée.
 
 Chaque "tenant" possède sa propre configuration et ses propres données, garantissant une séparation stricte des informations médicales sensibles.
+
 
 ## 🚀 Mise en route
 
