@@ -39,10 +39,31 @@
             margin-bottom: 0;
         }
 
+        #page-header .links-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #page-header .links-list .menu-item::marker {
+            content: "";
+        }
+
         @media (min-width: 1200px) {
             #page-header .menu-wrapper {
                 margin-inline-start: 1.5rem;
             }
+        }
+
+        #page-header .links-list {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+
+        #page-header .menu-link::before {
+            display: none !important;
+            content: none !important;
         }
 
         @media (max-width: 1199.98px) {
