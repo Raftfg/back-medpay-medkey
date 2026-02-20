@@ -38,10 +38,43 @@
             line-height: 1;
         }
 
-        .our-clients .sec-heading .pre-title,
-        .our-clients .sec-heading .title,
-        .our-clients .sec-heading .hollow-text {
-            color: var(--clr-white) !important;
+        .medical-services {
+            background: #f4f6f8;
+        }
+
+        .medical-services .sec-heading .pre-title,
+        .medical-services .sec-heading .title {
+            color: #2f3542 !important;
+        }
+
+        .medical-services-grid .service-item {
+            text-align: center;
+            margin-bottom: 1.75rem;
+        }
+
+        .medical-services-grid .icon-wrap {
+            width: 84px;
+            height: 84px;
+            border-radius: 50%;
+            margin: 0 auto 0.85rem;
+            background: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 18px rgba(13, 24, 87, 0.12);
+        }
+
+        .medical-services-grid .icon-wrap i {
+            font-size: 2rem;
+            color: #20b2aa;
+            line-height: 1;
+        }
+
+        .medical-services-grid .service-label {
+            font-size: 1.08rem;
+            font-weight: 600;
+            color: #2f3542;
+            text-transform: uppercase;
         }
     </style>
 
@@ -225,16 +258,37 @@
 
    
 
-    <section class="our-clients mega-section">
+    <section class="medical-services mega-section" id="medical-services">
         <div class="container">
-            <div class="sec-heading centered"><div class="content-area"><span class="pre-title">Partenaires</span><h2 class="title">Ils nous font <span class="hollow-text">confiance</span></h2></div></div>
-            <div class="swiper-container">
-                <div class="swiper-wrapper clients-logo-wrapper">
-                    @for ($i = 1; $i <= 7; $i++)
-                        <div class="swiper-slide">
-                            <div class="client-logo"><img class="img-fluid logo" loading="lazy" src="/images/landing/clients-logos/{{ $i }}-white.png" alt="Logo client {{ $i }}"></div>
-                        </div>
-                    @endfor
+            <div class="sec-heading centered">
+                <div class="content-area">
+                    <h2 class="title">Services médicaux</h2>
+                </div>
+            </div>
+            <div class="row medical-services-grid justify-content-center">
+                <div class="col-6 col-md-4 col-lg-2 service-item">
+                    <div class="icon-wrap"><i class="bi bi-heart-pulse-fill"></i></div>
+                    <h3 class="service-label">Maternité</h3>
+                </div>
+                <div class="col-6 col-md-4 col-lg-2 service-item">
+                    <div class="icon-wrap"><i class="bi bi-person-fill"></i></div>
+                    <h3 class="service-label">Pédiatrie</h3>
+                </div>
+                <div class="col-6 col-md-4 col-lg-2 service-item">
+                    <div class="icon-wrap"><i class="bi bi-bandaid-fill"></i></div>
+                    <h3 class="service-label">Chirurgie</h3>
+                </div>
+                <div class="col-6 col-md-4 col-lg-2 service-item">
+                    <div class="icon-wrap"><i class="bi bi-image-fill"></i></div>
+                    <h3 class="service-label">Imagerie</h3>
+                </div>
+                <div class="col-6 col-md-4 col-lg-2 service-item">
+                    <div class="icon-wrap"><i class="bi bi-eyedropper"></i></div>
+                    <h3 class="service-label">Laboratoire</h3>
+                </div>
+                <div class="col-6 col-md-4 col-lg-2 service-item">
+                    <div class="icon-wrap"><i class="bi bi-hospital-fill"></i></div>
+                    <h3 class="service-label">Infirmerie</h3>
                 </div>
             </div>
         </div>
