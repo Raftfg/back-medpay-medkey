@@ -2,14 +2,13 @@
 
 namespace App\Models\Passport;
 
+use App\Models\Passport\Concerns\ResolvesTenantConnection;
 use Laravel\Passport\RefreshToken as PassportRefreshToken;
 
 class RefreshToken extends PassportRefreshToken
 {
-    /**
-     * The database connection that should be used by the model.
-     *
-     * @var string
-     */
+    use ResolvesTenantConnection;
+
+    /** @var string */
     protected $connection = 'tenant';
 }

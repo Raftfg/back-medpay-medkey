@@ -2,14 +2,13 @@
 
 namespace App\Models\Passport;
 
+use App\Models\Passport\Concerns\ResolvesTenantConnection;
 use Laravel\Passport\Token as PassportToken;
 
 class Token extends PassportToken
 {
-    /**
-     * The database connection that should be used by the model.
-     *
-     * @var string
-     */
+    use ResolvesTenantConnection;
+
+    /** @var string */
     protected $connection = 'tenant';
 }

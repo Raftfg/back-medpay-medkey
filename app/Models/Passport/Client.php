@@ -2,16 +2,15 @@
 
 namespace App\Models\Passport;
 
+use App\Models\Passport\Concerns\ResolvesTenantConnection;
 use Illuminate\Support\Str;
 use Laravel\Passport\Client as PassportClient;
 
 class Client extends PassportClient
 {
-    /**
-     * The database connection that should be used by the model.
-     *
-     * @var string
-     */
+    use ResolvesTenantConnection;
+
+    /** @var string */
     protected $connection = 'tenant';
 
     /**
