@@ -32,6 +32,7 @@ class TenantMiddleware
         'health',
         'api/health',
         'api/v1/public/tenants/*',
+        'ressources',
         'faq',
         'contact',
         'mentions-legales',

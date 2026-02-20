@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', LandingController::class)->name('home');
 
+Route::view('/ressources', 'resources')->name('resources');
 Route::view('/faq', 'faq')->name('faq');
 Route::view('/mentions-legales', 'legal.mentions')->name('legal.mentions');
 Route::view('/confidentialite', 'legal.confidentialite')->name('legal.confidentialite');

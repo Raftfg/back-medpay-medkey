@@ -188,6 +188,9 @@
                             <a class="menu-link" href="{{ route('home') }}#pricing-1">Tarifs</a>
                         </li>
                         <li class="menu-item">
+                            <a class="menu-link {{ request()->routeIs('resources') ? 'active' : '' }}" href="{{ route('resources') }}">Ressources</a>
+                        </li>
+                        <li class="menu-item">
                             <a class="menu-link {{ request()->routeIs('faq') ? 'active' : '' }}" href="{{ route('faq') }}">Support</a>
                         </li>
                         <li class="menu-item">
@@ -246,6 +249,7 @@
                             <li class="footer-menu-item"><a class="footer-menu-link" href="{{ route('home') }}#page-hero">Présentation</a></li>
                             <li class="footer-menu-item"><a class="footer-menu-link" href="{{ route('home') }}#services">Fonctionnalités</a></li>
                             <li class="footer-menu-item"><a class="footer-menu-link" href="{{ route('home') }}#pricing-1">Tarifs</a></li>
+                            <li class="footer-menu-item"><a class="footer-menu-link" href="{{ route('resources') }}">Ressources</a></li>
                             <li class="footer-menu-item"><a class="footer-menu-link" href="{{ route('faq') }}">Support</a></li>
                             <li class="footer-menu-item"><a class="footer-menu-link" href="{{ route('contact') }}">Contact</a></li>
                         </ul>
