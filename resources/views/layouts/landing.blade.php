@@ -64,12 +64,21 @@
             margin: 0;
         }
 
+        #page-header .header-logo .logo-img {
+            max-height: 42px;
+            width: auto;
+        }
+
         #page-header .menu-link::before {
             display: none !important;
             content: none !important;
         }
 
         @media (max-width: 1199.98px) {
+            #page-header .header-logo .logo-img {
+                max-height: 38px;
+            }
+
             #page-header .nav-cta-area {
                 display: none;
             }
@@ -89,8 +98,8 @@
             <nav class="menu-navbar">
                 <div class="header-logo">
                     <a class="logo-link" href="{{ route('home') }}">
-                        <img class="logo-img light-logo" loading="lazy" src="/images/landing/logo/logo-light.png" alt="Medkey">
-                        <img class="logo-img dark-logo" loading="lazy" src="/images/landing/logo/logo-dark.png" alt="Medkey">
+                        <img class="logo-img light-logo" loading="lazy" src="/images/landing/logo/logo1.png" alt="Medkey">
+                        <img class="logo-img dark-logo" loading="lazy" src="/images/landing/logo/logo2.png" alt="Medkey">
                     </a>
                 </div>
 
