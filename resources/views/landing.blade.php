@@ -5,24 +5,51 @@
 @section('header_class', 'page-header content-always-light header-basic')
 
 @section('content')
+    <style>
+        #services .row > [class*="col-"] {
+            display: flex;
+        }
+
+        #services .service-box {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #services .service-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 0.9rem;
+            text-align: center;
+        }
+
+        #services .service-icon i {
+            font-size: 2.15rem;
+            line-height: 1;
+        }
+    </style>
+
     <section class="page-hero hero-swiper-slider slide-effect d-flex align-items-center" id="page-hero">
         <div class="particles-js bubels" id="particles-js"></div>
         <div class="slider swiper-container">
             <div class="swiper-wrapper">
                 <div class="swiper-slide">
-                    <div class="slide-bg-img" data-bg-img="/images/landing/hero/hero-bg-1.jpg">
+                    <div class="slide-bg-img" data-bg-img="/images/landing/hero/pilo.jpeg">
                         <div class="overlay-gradient-color"></div>
                     </div>
                     <div class="container">
                         <div class="hero-text-area content-always-light">
                             <div class="row g-0">
                                 <div class="col-12 col-lg-8">
-                                    <div class="pre-title">Santé Numérique</div>
-                                    <h1 class="slide-title">Gérez votre établissement avec un SIH <span class="featured-text">intelligent</span></h1>
-                                    <p class="slide-subtitle">Medkey centralise la gestion des patients, des soins et des ressources de votre établissement de santé en une seule plateforme intégrée et sécurisée.</p>
+                                    <div class="pre-title">Transformation Digitale de la Santé</div>
+                                    <h1 class="slide-title">Pilotez votre établissement avec un SIH intelligent, fiable et évolutif <span class="featured-text">intelligent</span></h1>
+                                    <p class="slide-subtitle">edKey est une plateforme de système d’information hospitalier moderne qui centralise la gestion des patients, des soins, des flux et des ressources.
+                                    Gagnez en efficacité opérationnelle, améliorez la qualité des soins et sécurisez vos données médicales — le tout sur une seule interface.</p>
                                     <div class="cta-links-area">
                                         <a class="btn-solid cta-link cta-link-primary" href="{{ \Illuminate\Support\Facades\Route::has('register') ? route('register') : '/register' }}">Commencer gratuitement</a>
-                                        <a class="btn-outline cta-link" href="{{ route('contact') }}">Nous contacter</a>
+                                        <a class="btn-outline cta-link" href="{{ route('contact') }}">Demander une démonstration</a>
                                     </div>
                                 </div>
                             </div>
@@ -30,19 +57,20 @@
                     </div>
                 </div>
                 <div class="swiper-slide">
-                    <div class="slide-bg-img" data-bg-img="/images/landing/hero/hero-bg-2.jpg">
+                    <div class="slide-bg-img" data-bg-img="/images/landing/hero/made.jpg">
                         <div class="overlay-gradient-color"></div>
                     </div>
                     <div class="container">
                         <div class="hero-text-area content-always-light">
                             <div class="row g-0">
                                 <div class="col-12 col-lg-8">
-                                    <div class="pre-title">Dossier Patient Centralisé</div>
-                                    <h2 class="slide-title">Des dossiers médicaux <span class="featured-text">accessibles</span>, complets et sécurisés</h2>
-                                    <p class="slide-subtitle">Chaque professionnel de santé accède en temps réel aux informations patients dont il a besoin, au bon moment, depuis n’importe quel poste.</p>
+                                    <div class="pre-title">Dossier Patient Unifié & Intelligent</div>
+                                    <h2 class="slide-title">Des dossiers médicaux accessibles, complets et hautement sécurisés<span class="featured-text"></h2>
+                                    <p class="slide-subtitle">MedKey centralise l’ensemble des informations médicales du patient dans un dossier unique, structuré et conforme aux exigences de confidentialité.
+                                    Chaque professionnel de santé accède instantanément aux données essentielles — antécédents, consultations, prescriptions — pour une prise en charge rapide, coordonnée et sans rupture.</p>
                                     <div class="cta-links-area">
                                         <a class="btn-solid cta-link cta-link-primary" href="{{ \Illuminate\Support\Facades\Route::has('register') ? route('register') : '/register' }}">Découvrir la solution</a>
-                                        <a class="btn-outline cta-link" href="{{ route('contact') }}">Nous contacter</a>
+                                        <a class="btn-outline cta-link" href="{{ route('contact') }}">Demander une démonstration</a>
                                     </div>
                                 </div>
                             </div>
@@ -57,12 +85,34 @@
                         <div class="hero-text-area content-always-light">
                             <div class="row g-0">
                                 <div class="col-12 col-lg-8">
-                                    <div class="pre-title">Pilotage en Temps Réel</div>
-                                    <h2 class="slide-title">Des décisions cliniques éclairées par la <span class="featured-text">data</span></h2>
-                                    <p class="slide-subtitle">Tableaux de bord hospitaliers, indicateurs qualité, alertes en temps réel — tout pour piloter votre établissement de santé avec précision.</p>
+                                    <div class="pre-title">Pilotage Hospitalier Intelligent</div>
+                                    <h2 class="slide-title">Des décisions cliniques et stratégiques éclairées par la <span class="featured-text">data</span></h2>
+                                    <p class="slide-subtitle">MedKey transforme vos données hospitalières en indicateurs clairs et actionnables.
+                                    Suivez l’activité médicale, la performance des services, la disponibilité des ressources et les alertes critiques en temps réel pour piloter votre établissement avec précision, anticipation et sérénité.</p>
                                     <div class="cta-links-area">
-                                        <a class="btn-solid cta-link cta-link-primary" href="{{ \Illuminate\Support\Facades\Route::has('register') ? route('register') : '/register' }}">Voir les fonctionnalités</a>
-                                        <a class="btn-outline cta-link" href="{{ route('contact') }}">Nous contacter</a>
+                                        <a class="btn-solid cta-link cta-link-primary" href="{{ \Illuminate\Support\Facades\Route::has('register') ? route('register') : '/register' }}">Commencer gratuitement</a>
+                                        <a class="btn-outline cta-link" href="{{ route('contact') }}">Demander une démonstration</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="swiper-slide">
+                    <div class="slide-bg-img" data-bg-img="/images/landing/hero/hero-bg-1.jpg">
+                        <div class="overlay-gradient-color"></div>
+                    </div>
+                    <div class="container">
+                        <div class="hero-text-area content-always-light">
+                            <div class="row g-0">
+                                <div class="col-12 col-lg-8">
+                                    <div class="pre-title">Santé Numérique</div>
+                                    <h1 class="slide-title">Gérez votre établissement avec un SIH <span class="featured-text">intelligent</span></h1>
+                                    <p class="slide-subtitle">Medkey centralise la gestion des patients, des soins et des ressources de votre établissement de santé en une seule plateforme intégrée et sécurisée.</p>
+                                    <div class="cta-links-area">
+                                        <a class="btn-solid cta-link cta-link-primary" href="{{ \Illuminate\Support\Facades\Route::has('register') ? route('register') : '/register' }}">Commencer gratuitement</a>
+                                        <a class="btn-outline cta-link" href="{{ route('contact') }}">Demander une démonstration</a>
                                     </div>
                                 </div>
                             </div>
@@ -70,8 +120,23 @@
                     </div>
                 </div>
             </div>
-            <div class="swiper-button-prev"><i class="bi bi-arrow-left icon"></i></div>
-            <div class="swiper-button-next"><i class="bi bi-arrow-right icon"></i></div>
+
+            <div class="slides-state h-align  ">
+          <div class="slide-num curent-slide  "></div>
+          <!--Add Pagination-->
+          <div class="swiper-pagination"></div>
+          <div class="slide-num slides-count  "></div>
+        </div>
+            <div class="slider-stacked-arrows">
+          <div class="swiper-button-prev   ">
+            <div class="left-arrow"><i class="bi bi-chevron-left icon "></i>
+            </div>
+          </div>
+          <div class="swiper-button-next  ">
+            <div class="right-arrow"><i class="bi bi-chevron-right icon "></i>
+            </div>
+          </div>
+        </div>
         </div>
     </section>
 
@@ -79,7 +144,7 @@
         <div class="container">
             <div class="sec-heading centered">
                 <div class="content-area">
-                    <span class="pre-title wow fadeInUp" data-wow-delay=".2s">Fonctionnalités</span>
+                    <span class="pre-title wow fadeInUp" data-wow-delay=".2s">Nos Fonctionnalités</span>
                     <h2 class="title wow fadeInUp" data-wow-delay=".4s">Modules SIH <span class="hollow-text">essentiels</span></h2>
                 </div>
             </div>
