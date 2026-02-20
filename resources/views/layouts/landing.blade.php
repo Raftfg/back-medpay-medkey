@@ -111,6 +111,43 @@
                 display: none;
             }
         }
+
+        #page-footer .footer-col {
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 1.1rem 1.1rem 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(2px);
+            height: 100%;
+        }
+
+        #page-footer .footer-col-title {
+            margin-bottom: 0.85rem;
+            letter-spacing: 0.2px;
+        }
+
+        #page-footer .footer-menu-item {
+            margin-bottom: 0.45rem;
+        }
+
+        #page-footer .footer-menu-link {
+            opacity: 0.92;
+            transition: all 0.25s ease;
+        }
+
+        #page-footer .footer-menu-link:hover {
+            color: var(--clr-main);
+            opacity: 1;
+            padding-left: 0.18rem;
+        }
+
+        #page-footer .contact-info-card {
+            margin-bottom: 0.75rem;
+        }
+
+        #page-footer .footer-text-about-us {
+            opacity: 0.9;
+        }
     </style>
 </head>
 <body class="@yield('body_class', 'dark-theme')">
@@ -134,16 +171,13 @@
                 <div class="links menu-wrapper">
                     <ul class="list-js links-list">
                         <li class="menu-item">
-                            <a class="menu-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">Présentation</a>
+                            <a class="menu-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}#page-hero">Présentation</a>
                         </li>
                         <li class="menu-item">
                             <a class="menu-link" href="{{ route('home') }}#services">Fonctionnalités</a>
                         </li>
                         <li class="menu-item">
                             <a class="menu-link" href="{{ route('home') }}#pricing-1">Tarifs</a>
-                        </li>
-                        <li class="menu-item">
-                            <a class="menu-link" href="{{ route('home') }}#portfolio">Ressource</a>
                         </li>
                         <li class="menu-item">
                             <a class="menu-link {{ request()->routeIs('faq') ? 'active' : '' }}" href="{{ route('faq') }}">Support</a>
@@ -169,10 +203,6 @@
                         <div class="switch-inner go-dark" title="Passer en mode sombre">
                             <i class="bi bi-moon icon"></i>
                         </div>
-                        <div class="mode-switcher ">
-              <div class="switch-inner go-light " title="Switch To Light Mode "><i class="bi bi-sun icon "></i></div>
-              <div class="switch-inner go-dark" title="Switch To Dark Mode "><i class="bi bi-moon icon "></i></div>
-            </div>
                     </div>
                 </div>
             </nav>
@@ -205,10 +235,10 @@
                     <h2 class="footer-col-title">Navigation</h2>
                     <div class="footer-col-content-wrapper">
                         <ul class="footer-menu">
-                            <li class="footer-menu-item"><a class="footer-menu-link" href="{{ route('home') }}">Accueil</a></li>
+                            <li class="footer-menu-item"><a class="footer-menu-link" href="{{ route('home') }}#page-hero">Présentation</a></li>
                             <li class="footer-menu-item"><a class="footer-menu-link" href="{{ route('home') }}#services">Fonctionnalités</a></li>
                             <li class="footer-menu-item"><a class="footer-menu-link" href="{{ route('home') }}#pricing-1">Tarifs</a></li>
-                            <li class="footer-menu-item"><a class="footer-menu-link" href="{{ route('faq') }}">FAQ</a></li>
+                            <li class="footer-menu-item"><a class="footer-menu-link" href="{{ route('faq') }}">Support</a></li>
                             <li class="footer-menu-item"><a class="footer-menu-link" href="{{ route('contact') }}">Contact</a></li>
                         </ul>
                     </div>
