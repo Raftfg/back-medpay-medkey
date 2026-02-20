@@ -74,6 +74,34 @@
             content: none !important;
         }
 
+        #page-header.content-always-light.header-basic .nav-cta-area .btn-solid,
+        #page-header.is-sticky.header-basic .nav-cta-area .btn-solid {
+            background-color: var(--clr-white);
+            border-color: var(--clr-white);
+            color: var(--clr-main);
+        }
+
+        #page-header.content-always-light.header-basic .nav-cta-area .btn-solid:hover,
+        #page-header.is-sticky.header-basic .nav-cta-area .btn-solid:hover {
+            background-color: rgba(255, 255, 255, 0.92);
+            border-color: rgba(255, 255, 255, 0.92);
+            color: var(--clr-main);
+        }
+
+        #page-header.content-always-light.header-basic .nav-cta-area .btn-outline,
+        #page-header.is-sticky.header-basic .nav-cta-area .btn-outline {
+            border-color: var(--clr-white);
+            color: var(--clr-white);
+            background-color: transparent;
+        }
+
+        #page-header.content-always-light.header-basic .nav-cta-area .btn-outline:hover,
+        #page-header.is-sticky.header-basic .nav-cta-area .btn-outline:hover {
+            background-color: var(--clr-white);
+            border-color: var(--clr-white);
+            color: var(--clr-main);
+        }
+
         @media (max-width: 1199.98px) {
             #page-header .header-logo .logo-img {
                 max-height: 38px;
