@@ -15,6 +15,14 @@
             height: 100%;
             display: flex;
             flex-direction: column;
+            transition: all 0.28s ease;
+        }
+
+        #services .service-box:hover {
+            background-color: rgba(56, 189, 248, 0.16);
+            border-color: #38bdf8;
+            transform: translateY(-6px);
+            box-shadow: 0 10px 24px rgba(56, 189, 248, 0.25);
         }
 
         #services .service-icon {
