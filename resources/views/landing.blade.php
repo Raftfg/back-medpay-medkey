@@ -37,6 +37,12 @@
             font-size: 2.15rem;
             line-height: 1;
         }
+
+        .our-clients .sec-heading .pre-title,
+        .our-clients .sec-heading .title,
+        .our-clients .sec-heading .hollow-text {
+            color: var(--clr-white) !important;
+        }
     </style>
 
     <section class="page-hero hero-swiper-slider slide-effect d-flex align-items-center" id="page-hero">
@@ -217,33 +223,7 @@
         </div>
     </section>
 
-    <section class="portfolio portfolio-grid mega-section" id="portfolio">
-        <div class="container">
-            <div class="sec-heading centered">
-                <div class="content-area">
-                    <span class="pre-title">Nos modules</span>
-                    <h2 class="title">Un SIH pour chaque <span class="hollow-text">service</span></h2>
-                </div>
-            </div>
-            <div class="portfolio-btn-list wow fadeInUp" data-wow-delay=".2s">
-                <button class="portfolio-btn active" data-filter="*">All</button>
-                <button class="portfolio-btn" data-filter=".mobile">Urgences</button>
-                <button class="portfolio-btn" data-filter=".web">Pharmacie</button>
-                <button class="portfolio-btn" data-filter=".data">Bloc Opératoire</button>
-                <button class="portfolio-btn" data-filter=".hosting">Laboratoire</button>
-            </div>
-            <div class="portfolio-group wow fadeIn" data-wow-delay=".4s">
-                <div class="row">
-                    <div class="col-12 col-md-6 col-lg-4 portfolio-item mobile"><div class="item"><img src="/images/landing/portfolio/1.jpg" alt="Gestion des urgences"><div class="item-info"><h3>Gestion des Urgences</h3></div></div></div>
-                    <div class="col-12 col-md-6 col-lg-4 portfolio-item web"><div class="item"><img src="/images/landing/portfolio/2.jpg" alt="Pharmacie"><div class="item-info"><h3>Pharmacie Hospitalière</h3></div></div></div>
-                    <div class="col-12 col-md-6 col-lg-4 portfolio-item data"><div class="item"><img src="/images/landing/portfolio/3.jpg" alt="Bloc opératoire"><div class="item-info"><h3>Bloc Opératoire &amp; Anesthésie</h3></div></div></div>
-                    <div class="col-12 col-md-6 col-lg-4 portfolio-item hosting"><div class="item"><img src="/images/landing/portfolio/4.jpg" alt="Laboratoire"><div class="item-info"><h3>Laboratoire d’Analyses</h3></div></div></div>
-                    <div class="col-12 col-md-6 col-lg-4 portfolio-item hosting"><div class="item"><img src="/images/landing/portfolio/5.jpg" alt="Radiologie"><div class="item-info"><h3>Radiologie &amp; Imagerie</h3></div></div></div>
-                    <div class="col-12 col-md-6 col-lg-4 portfolio-item mobile"><div class="item"><img src="/images/landing/portfolio/6.jpg" alt="Administration"><div class="item-info"><h3>Administration &amp; Facturation</h3></div></div></div>
-                </div>
-            </div>
-        </div>
-    </section>
+   
 
     <section class="our-clients mega-section">
         <div class="container">
