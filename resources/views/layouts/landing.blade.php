@@ -201,7 +201,7 @@
 
                 <div class="controls-box">
                     <div class="nav-cta-area">
-                        <a class="btn-solid cta-link cta-link-primary nav-cta-btn" href="{{ \Illuminate\Support\Facades\Route::has('register') ? route('register') : '/register' }}">Accéder gratuitement</a>
+                        <a class="btn-solid cta-link cta-link-primary nav-cta-btn" href="{{ route('free-access') }}">Accéder gratuitement</a>
                         <a class="btn-outline cta-link nav-cta-btn" href="/login">Connexion</a>
                     </div>
                     <div class="control menu-toggler">
