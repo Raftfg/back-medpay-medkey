@@ -7,6 +7,7 @@ use App\Core\Models\Hospital;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -26,14 +27,34 @@ class TenantRegistrationController extends Controller
      */
     public function register(Request $request): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
+        if (!$this->isCoreReady()) {
+            return response()->json([
+                'message' => "Le noyau multi-tenant n'est pas initialisé (table core.hospitals indisponible).",
+                'hint' => 'Exécutez les migrations core: php artisan migrate --database=core --path=database/core/migrations',
+            ], 503);
+        }
+
+        // Compatibilité:
+        // - nouveau front: email + organization_name + plan=free
+        // - ancien front: hospital_name + admin_email + autres champs
+        $normalizedPayload = [
+            'hospital_name' => $request->input('organization_name', $request->input('hospital_name')),
+            'admin_email' => $request->input('email', $request->input('admin_email')),
+            'admin_phone' => $request->input('admin_phone'),
+            'country' => $request->input('country'),
+            'city' => $request->input('city'),
+            'main_language' => $request->input('main_language', 'fr'),
+            'plan' => $request->input('plan', 'free'),
+        ];
+
+        $validator = Validator::make($normalizedPayload, [
             'hospital_name' => 'required|string|max:255',
             'admin_email' => 'required|email|max:255',
-            'admin_phone' => 'required|string|max:50',
-            'country' => 'required|string|max:100',
-            'city' => 'required|string|max:100',
-            'main_language' => 'required|string|max:10',
-            'plan' => 'required|string|in:trial,standard,premium',
+            'admin_phone' => 'nullable|string|max:50',
+            'country' => 'nullable|string|max:100',
+            'city' => 'nullable|string|max:100',
+            'main_language' => 'nullable|string|max:10',
+            'plan' => 'required|string|in:free,trial,standard,premium',
         ]);
 
         if ($validator->fails()) {
@@ -87,7 +108,7 @@ class TenantRegistrationController extends Controller
             'database_password' => config('database.connections.mysql.password'),
             'status' => 'provisioning',
             'plan' => $data['plan'],
-            'address' => $data['city'] . ', ' . $data['country'],
+            'address' => $this->buildAddress($data['city'] ?? null, $data['country'] ?? null),
             'country' => $data['country'],
             'city' => $data['city'],
             'phone' => $data['admin_phone'],
@@ -110,10 +131,26 @@ class TenantRegistrationController extends Controller
     }
 
     /**
+     * Construit l'adresse à partir de la ville et du pays.
+     */
+    private function buildAddress(?string $city, ?string $country): ?string
+    {
+        $parts = array_values(array_filter([$city, $country], fn($item) => !empty($item)));
+        return empty($parts) ? null : implode(', ', $parts);
+    }
+
+    /**
      * Récupère le statut d'onboarding d'un hospital via son UUID.
      */
     public function status(string $uuid): JsonResponse
     {
+        if (!$this->isCoreReady()) {
+            return response()->json([
+                'message' => "Le noyau multi-tenant n'est pas initialisé (table core.hospitals indisponible).",
+                'hint' => 'Exécutez les migrations core: php artisan migrate --database=core --path=database/core/migrations',
+            ], 503);
+        }
+
         $hospital = Hospital::where('uuid', $uuid)->first();
 
         if (!$hospital) {
@@ -133,6 +170,18 @@ class TenantRegistrationController extends Controller
                 'login_url' => 'https://' . $hospital->domain,
             ],
         ]);
+    }
+
+    /**
+     * Vérifie que la base CORE est prête pour l'onboarding tenant.
+     */
+    private function isCoreReady(): bool
+    {
+        try {
+            return Schema::connection('core')->hasTable('hospitals');
+        } catch (\Throwable $e) {
+            return false;
+        }
     }
 }
 

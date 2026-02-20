@@ -27,6 +27,7 @@ class UserCurrentResource extends JsonResource {
             'tel_mobile_verified_at' => $this->tel_mobile_verified_at,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'plan' => optional(\App\Services\TenantService::current())->plan,
             'roles' => RoleResource::collection($this->roles),
             'permissions_cles' => $this->setClePermissions(),
         ];

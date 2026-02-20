@@ -47,6 +47,7 @@ class TenantProvisioningService
             'create_database' => true,
             'run_migrations' => true,
             'activate_default_modules' => true,
+            'selected_modules' => null,
             'run_seeders' => config('tenant.provisioning.auto_seed', false),
             'force' => false,
             // Mode idempotent : ne pas lever d'erreur si la base existe déjà
@@ -76,8 +77,12 @@ class TenantProvisioningService
 
             // 3. Activer les modules par défaut
             if ($options['activate_default_modules']) {
-                $defaultModules = config('tenant.provisioning.default_modules', 'Acl,Administration,Patient,Payment');
-                $modules = array_map('trim', explode(',', $defaultModules));
+                if (is_array($options['selected_modules']) && !empty($options['selected_modules'])) {
+                    $modules = array_values(array_unique(array_filter(array_map('trim', $options['selected_modules']))));
+                } else {
+                    $defaultModules = config('tenant.provisioning.default_modules', 'Acl,Administration,Patient,Payment');
+                    $modules = array_map('trim', explode(',', $defaultModules));
+                }
                 $this->activateModules($hospital, $modules);
                 $results['modules_activated'] = true;
                 $results['modules'] = $modules;

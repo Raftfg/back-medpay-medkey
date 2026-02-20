@@ -137,6 +137,17 @@ class AuthController extends \App\Http\Controllers\Api\V1\ApiController
         // ÉTAPE 9: Récupérer les informations de l'utilisateur
         $role = $user->roles->first();
         $permissions = $user->getAllPermissions()->pluck('name');
+        if ($hospital && ($hospital->plan === 'free')) {
+            $allowedPermissions = collect([
+                'voir_module_patient',
+                'voir_module_mouvement',
+                'voir_module_pharmacie',
+                'voir_module_caisse',
+            ]);
+            $permissions = $permissions->filter(
+                fn ($permissionName) => $allowedPermissions->contains(strtolower($permissionName))
+            )->values();
+        }
 
         // ÉTAPE 10: Log de connexion réussie
         Log::info('Connexion réussie', [
@@ -149,7 +160,9 @@ class AuthController extends \App\Http\Controllers\Api\V1\ApiController
         // ÉTAPE 11: Retourner les données
         $donnees = [
             'access_token' => $token,
-            'user' => $user,
+            'user' => array_merge($user->toArray(), [
+                'plan' => $hospital?->plan,
+            ]),
             'role' => $role,
             'permissions' => $permissions,
             'hospital' => $hospital, // Inclure les infos de l'hôpital

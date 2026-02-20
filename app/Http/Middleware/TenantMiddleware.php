@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use App\Core\Models\Hospital;
 use App\Core\Services\TenantConnectionService;
@@ -30,6 +31,7 @@ class TenantMiddleware
     protected $excludedRoutes = [
         'health',
         'api/health',
+        'api/v1/public/tenants/*',
         'admin/*', // Routes d'administration globale si nécessaire
     ];
 
@@ -51,6 +53,14 @@ class TenantMiddleware
         // PRIORITÉ 2: Vérifier si la route est exclue (routes publiques, login, etc.)
         if ($this->isExcludedRoute($request)) {
             return $next($request);
+        }
+
+        // Si la table core.hospitals est indisponible, éviter un 500 SQL et retourner un message clair.
+        if (!$this->isHospitalsTableAvailable()) {
+            return response()->json([
+                'message' => "Le service tenant n'est pas initialisé (table core.hospitals indisponible).",
+                'hint' => 'Exécutez les migrations core avant de continuer.',
+            ], 503);
         }
 
         // Récupérer le domaine de la requête
@@ -242,28 +252,52 @@ class TenantMiddleware
         // Utiliser le cache pour améliorer les performances
         $cacheKey = "hospital_by_domain_{$domain}";
 
-        return Cache::remember($cacheKey, 3600, function () use ($domain) {
-            // Rechercher par domaine exact
-            $hospital = Hospital::where('domain', $domain)->first();
-            
-            // Si non trouvé, rechercher par slug
-            if (!$hospital) {
-                $slug = $this->extractSlugFromDomain($domain);
-                if ($slug) {
-                    $hospital = Hospital::where('slug', $slug)->first();
+        try {
+            return Cache::remember($cacheKey, 3600, function () use ($domain) {
+                // Rechercher par domaine exact
+                $hospital = Hospital::where('domain', $domain)->first();
+                
+                // Si non trouvé, rechercher par slug
+                if (!$hospital) {
+                    $slug = $this->extractSlugFromDomain($domain);
+                    if ($slug) {
+                        $hospital = Hospital::where('slug', $slug)->first();
+                    }
                 }
-            }
-            
-            // Log pour debug
-            if (!$hospital) {
-                Log::debug("Hôpital non trouvé pour le domaine", [
-                    'domain' => $domain,
-                    'domaines_disponibles' => Hospital::pluck('domain')->toArray()
-                ]);
-            }
-            
-            return $hospital;
-        });
+
+                // Log pour debug
+                if (!$hospital) {
+                    Log::debug("Hôpital non trouvé pour le domaine", [
+                        'domain' => $domain,
+                        'domaines_disponibles' => Hospital::pluck('domain')->toArray()
+                    ]);
+                }
+                
+                return $hospital;
+            });
+        } catch (\Throwable $e) {
+            Log::error("TenantMiddleware: impossible d'identifier l'hôpital", [
+                'domain' => $domain,
+                'error' => $e->getMessage(),
+            ]);
+
+            return null;
+        }
+    }
+
+    /**
+     * Vérifie la disponibilité de la table core.hospitals.
+     */
+    protected function isHospitalsTableAvailable(): bool
+    {
+        try {
+            return Schema::connection('core')->hasTable('hospitals');
+        } catch (\Throwable $e) {
+            Log::error("TenantMiddleware: table core.hospitals indisponible", [
+                'error' => $e->getMessage(),
+            ]);
+            return false;
+        }
     }
 
     /**

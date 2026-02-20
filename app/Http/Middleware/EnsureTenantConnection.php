@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use App\Core\Services\TenantConnectionService;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -19,6 +20,17 @@ use Symfony\Component\HttpFoundation\Response;
 class EnsureTenantConnection
 {
     /**
+     * Routes publiques qui ne nécessitent pas de connexion tenant active.
+     *
+     * @var array<int,string>
+     */
+    protected array $excludedRoutes = [
+        'api/v1/public/tenants/*',
+        'v1/public/tenants/*',
+        'public/tenants/*',
+    ];
+
+    /**
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -29,6 +41,11 @@ class EnsureTenantConnection
     {
         // Laisser passer les requêtes OPTIONS (preflight CORS)
         if ($request->isMethod('OPTIONS')) {
+            return $next($request);
+        }
+
+        // Laisser passer les routes publiques d'onboarding (avant création de tenant)
+        if ($this->isExcludedRoute($request)) {
             return $next($request);
         }
 
@@ -91,5 +108,21 @@ class EnsureTenantConnection
         }
 
         return $next($request);
+    }
+
+    /**
+     * Vérifie si la route est exclue de la vérification de connexion tenant.
+     */
+    protected function isExcludedRoute(Request $request): bool
+    {
+        $path = $request->path();
+
+        foreach ($this->excludedRoutes as $pattern) {
+            if (Str::is($pattern, $path)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
