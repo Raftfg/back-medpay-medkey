@@ -2,44 +2,48 @@
 
 namespace App\Http\Middleware;
 
+use App\Core\Models\Hospital;
+use App\Core\Services\TenantConnectionService;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
-use App\Core\Models\Hospital;
-use App\Core\Services\TenantConnectionService;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Middleware TenantMiddleware
- * 
+ *
  * Détecte automatiquement le tenant (hôpital) à partir du domaine de la requête.
  * Stocke l'hôpital dans la requête et la session pour un accès facile dans toute l'application.
- * 
- * @package App\Http\Middleware
  */
 class TenantMiddleware
 {
     /**
      * Routes exclues de la détection du tenant
      * (ex: routes d'administration globale, health checks, routes publiques d'authentification, etc.)
-     * 
+     *
      * @var array
      */
     protected $excludedRoutes = [
+        '/',
+        '',
         'health',
         'api/health',
         'api/v1/public/tenants/*',
+        'faq',
+        'contact',
+        'mentions-legales',
+        'confidentialite',
+        'conditions',
+        'cookies',
         'admin/*', // Routes d'administration globale si nécessaire
     ];
 
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
@@ -49,14 +53,14 @@ class TenantMiddleware
         if ($request->isMethod('OPTIONS')) {
             return $next($request);
         }
-        
+
         // PRIORITÉ 2: Vérifier si la route est exclue (routes publiques, login, etc.)
         if ($this->isExcludedRoute($request)) {
             return $next($request);
         }
 
         // Si la table core.hospitals est indisponible, éviter un 500 SQL et retourner un message clair.
-        if (!$this->isHospitalsTableAvailable()) {
+        if (! $this->isHospitalsTableAvailable()) {
             return response()->json([
                 'message' => "Le service tenant n'est pas initialisé (table core.hospitals indisponible).",
                 'hint' => 'Exécutez les migrations core avant de continuer.',
@@ -65,8 +69,8 @@ class TenantMiddleware
 
         // Récupérer le domaine de la requête
         $domain = $this->getDomainFromRequest($request);
-        
-        Log::debug("TenantMiddleware - Domaine extrait", [
+
+        Log::debug('TenantMiddleware - Domaine extrait', [
             'domain' => $domain,
             'host' => $request->getHost(),
             'full_url' => $request->fullUrl(),
@@ -79,28 +83,28 @@ class TenantMiddleware
         if ($hospitalId) {
             $hospital = Hospital::find($hospitalId);
             if ($hospital) {
-                Log::debug("Hôpital identifié par ID (Header/Input)", ['hospital_id' => $hospital->id]);
+                Log::debug('Hôpital identifié par ID (Header/Input)', ['hospital_id' => $hospital->id]);
             }
         }
 
         // Si non trouvé par ID, tenter par domaine (comportement standard)
-        if (!$hospital) {
+        if (! $hospital) {
             $hospital = $this->identifyHospital($domain);
             if ($hospital) {
-                Log::debug("Hôpital identifié par domaine", [
+                Log::debug('Hôpital identifié par domaine', [
                     'hospital_id' => $hospital->id,
                     'hospital_name' => $hospital->name,
-                    'domain' => $domain
+                    'domain' => $domain,
                 ]);
             }
         }
 
         // Si aucun hôpital trouvé par domaine
-        if (!$hospital) {
+        if (! $hospital) {
             // PRIORITÉ 1: Utiliser l'hospital_id de l'utilisateur authentifié (respecte le multi-tenancy)
             if (auth()->check() && auth()->user()->hospital_id) {
                 $hospital = Hospital::find(auth()->user()->hospital_id);
-                
+
                 if ($hospital) {
                     Log::info("Utilisation de l'hôpital de l'utilisateur authentifié", [
                         'hospital_id' => $hospital->id,
@@ -110,18 +114,18 @@ class TenantMiddleware
                     ]);
                 }
             }
-            
+
             // PRIORITÉ 2: En développement local uniquement, utiliser le premier hôpital actif comme fallback
             // (uniquement si l'utilisateur n'est pas authentifié ou n'a pas d'hospital_id)
-            if (!$hospital && app()->environment(['local', 'testing'])) {
+            if (! $hospital && app()->environment(['local', 'testing'])) {
                 // FALLBACK CIBLÉ : Utiliser "Hopital CentralMA" pour le développement
                 $hospital = Hospital::where('domain', 'hopital-centralma-plateforme.com')->first();
-                
+
                 // Si non trouvé, alors prendre le premier actif
-                if (!$hospital) {
+                if (! $hospital) {
                     $hospital = Hospital::active()->first();
                 }
-                
+
                 if ($hospital) {
                     Log::warning("Utilisation de l'hôpital par défaut en développement (fallback)", [
                         'hospital_id' => $hospital->id,
@@ -132,7 +136,7 @@ class TenantMiddleware
                 } else {
                     return $this->handleUnknownDomain($request, $domain);
                 }
-            } elseif (!$hospital) {
+            } elseif (! $hospital) {
                 // En production, bloquer l'accès si aucun hôpital trouvé
                 return $this->handleUnknownDomain($request, $domain);
             }
@@ -146,17 +150,17 @@ class TenantMiddleware
                         'user_id' => auth()->id(),
                         'domain' => $domain,
                     ]);
-                    
+
                     // En développement, on bloque aussi pour montrer l'isolation au DG
                     abort(403, "Le domaine ne correspond pas à l'hôpital de votre session. Veuillez vous déconnecter.");
-                    
+
                     // (L'ancien code reconnectait automatiquement à l'hôpital de l'utilisateur, ce qui masquait l'isolation)
                 }
             }
         }
 
         // Vérifier que l'hôpital est actif
-        if (!$hospital->isActive()) {
+        if (! $hospital->isActive()) {
             return $this->handleInactiveHospital($request, $hospital);
         }
 
@@ -164,20 +168,20 @@ class TenantMiddleware
         try {
             $tenantService = app(TenantConnectionService::class);
             $tenantService->connect($hospital);
-            
-            Log::debug("Connexion tenant établie", [
+
+            Log::debug('Connexion tenant établie', [
                 'hospital_id' => $hospital->id,
                 'hospital_name' => $hospital->name,
                 'database' => $hospital->database_name,
             ]);
         } catch (\Exception $e) {
-            Log::error("Échec de la connexion à la base tenant", [
+            Log::error('Échec de la connexion à la base tenant', [
                 'hospital_id' => $hospital->id,
                 'hospital_name' => $hospital->name,
                 'database' => $hospital->database_name,
                 'error' => $e->getMessage(),
             ]);
-            
+
             return $this->handleConnectionError($request, $hospital, $e);
         }
 
@@ -189,14 +193,11 @@ class TenantMiddleware
 
     /**
      * Récupère le domaine de la requête
-     * 
+     *
      * Supporte :
      * - Sous-domaines (ex: hopital1.ma-plateforme.com)
      * - Header X-Tenant-Domain
      * - Paramètre tenant_domain
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return string
      */
     protected function getDomainFromRequest(Request $request): string
     {
@@ -206,6 +207,7 @@ class TenantMiddleware
             $originalHost = $request->header('X-Original-Host');
             // Extraire le domaine (sans le port si c'est 8080)
             $parts = explode(':', $originalHost);
+
             return $parts[0];
         }
 
@@ -230,10 +232,10 @@ class TenantMiddleware
                 $parts = explode('.', $host);
                 if (count($parts) > 1 && $parts[0] !== 'localhost' && $parts[0] !== '127') {
                     $subdomain = $parts[0];
-                    
+
                     // Pour le dev local, on retourne le host complet (ex: hopital1.localhost)
                     // Cela correspondra au champ 'domain' en base de données.
-                    return $host; 
+                    return $host;
                 }
             }
         }
@@ -243,9 +245,6 @@ class TenantMiddleware
 
     /**
      * Identifie l'hôpital à partir du domaine
-     *
-     * @param  string  $domain
-     * @return \App\Core\Models\Hospital|null
      */
     protected function identifyHospital(string $domain): ?Hospital
     {
@@ -256,9 +255,9 @@ class TenantMiddleware
             return Cache::remember($cacheKey, 3600, function () use ($domain) {
                 // Rechercher par domaine exact
                 $hospital = Hospital::where('domain', $domain)->first();
-                
+
                 // Si non trouvé, rechercher par slug
-                if (!$hospital) {
+                if (! $hospital) {
                     $slug = $this->extractSlugFromDomain($domain);
                     if ($slug) {
                         $hospital = Hospital::where('slug', $slug)->first();
@@ -266,13 +265,13 @@ class TenantMiddleware
                 }
 
                 // Log pour debug
-                if (!$hospital) {
-                    Log::debug("Hôpital non trouvé pour le domaine", [
+                if (! $hospital) {
+                    Log::debug('Hôpital non trouvé pour le domaine', [
                         'domain' => $domain,
-                        'domaines_disponibles' => Hospital::pluck('domain')->toArray()
+                        'domaines_disponibles' => Hospital::pluck('domain')->toArray(),
                     ]);
                 }
-                
+
                 return $hospital;
             });
         } catch (\Throwable $e) {
@@ -293,32 +292,27 @@ class TenantMiddleware
         try {
             return Schema::connection('core')->hasTable('hospitals');
         } catch (\Throwable $e) {
-            Log::error("TenantMiddleware: table core.hospitals indisponible", [
+            Log::error('TenantMiddleware: table core.hospitals indisponible', [
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
 
     /**
      * Extrait le slug du domaine (pour la recherche alternative)
-     *
-     * @param  string  $domain
-     * @return string|null
      */
     protected function extractSlugFromDomain(string $domain): ?string
     {
         // Exemple: hopital1.ma-plateforme.com -> hopital1
         $parts = explode('.', $domain);
+
         return $parts[0] ?? null;
     }
 
     /**
      * Stocke le tenant dans la requête et la session
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Core\Models\Hospital  $hospital
-     * @return void
      */
     protected function setTenant(Request $request, Hospital $hospital): void
     {
@@ -340,10 +334,6 @@ class TenantMiddleware
 
     /**
      * Gère le cas d'un domaine inconnu
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $domain
-     * @return \Symfony\Component\HttpFoundation\Response
      */
     protected function handleUnknownDomain(Request $request, string $domain): Response
     {
@@ -371,14 +361,10 @@ class TenantMiddleware
 
     /**
      * Gère le cas d'un hôpital inactif
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Core\Models\Hospital  $hospital
-     * @return \Symfony\Component\HttpFoundation\Response
      */
     protected function handleInactiveHospital(Request $request, Hospital $hospital): Response
     {
-        $message = match($hospital->status) {
+        $message = match ($hospital->status) {
             'suspended' => "L'accès à cet hôpital a été suspendu. Veuillez contacter l'administrateur.",
             'inactive' => "Cet hôpital n'est pas actif. Veuillez contacter l'administrateur.",
             default => "L'accès à cet hôpital n'est pas autorisé.",
@@ -389,11 +375,6 @@ class TenantMiddleware
 
     /**
      * Gère les erreurs de connexion à la base tenant
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Core\Models\Hospital  $hospital
-     * @param  \Exception  $exception
-     * @return \Symfony\Component\HttpFoundation\Response
      */
     protected function handleConnectionError(Request $request, Hospital $hospital, \Exception $exception): Response
     {
@@ -410,15 +391,12 @@ class TenantMiddleware
 
         // En production, message générique
         return response()->json([
-            'message' => "Service temporairement indisponible. Veuillez réessayer plus tard.",
+            'message' => 'Service temporairement indisponible. Veuillez réessayer plus tard.',
         ], 503);
     }
 
     /**
      * Vérifie si la route est exclue de la détection du tenant
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return bool
      */
     protected function isExcludedRoute(Request $request): bool
     {
