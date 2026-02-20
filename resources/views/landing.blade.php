@@ -145,6 +145,10 @@
                 min-height: 175px;
             }
         }
+
+        #take-action .btn-solid {
+            white-space: nowrap;
+        }
     </style>
 
     <section class="page-hero hero-swiper-slider slide-effect d-flex align-items-center" id="page-hero">
@@ -488,8 +492,18 @@
         <div class="overlay-photo-image-bg" data-bg-img="/images/landing/sections-bg-images/2.jpg" data-bg-opacity=".2"></div>
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-12 col-lg-9"><h2 class="title">Prêt à moderniser votre système d’information hospitalier ?</h2><p class="subtitle">Commencez gratuitement pendant 90 jours. Aucune carte bancaire requise.</p></div>
-                <div class="col-12 col-lg-3 text-lg-end"><a class="btn-solid" href="{{ \Illuminate\Support\Facades\Route::has('register') ? route('register') : '/register' }}">Commencer gratuitement</a></div>
+                <div class="col-12 col-lg-9">
+                    <h2 class="title">
+                        Prêt à faire entrer votre établissement dans une nouvelle ère de la santé digitale ?
+                    </h2>
+                    <p class="subtitle">
+                        Déployez MedKey en quelques minutes et transformez la gestion de votre établissement.
+                        <strong>Accès gratuit pendant 90 jours</strong>, sans engagement et sans carte bancaire.
+                    </p>
+                </div>
+                <div class="col-12 col-lg-3 text-lg-end">
+                    <a class="btn-solid" href="{{ \Illuminate\Support\Facades\Route::has('register') ? route('register') : '/register' }}">Commencer gratuitement</a>
+                </div>
             </div>
         </div>
     </section>
