@@ -38,11 +38,21 @@ return new class extends Migration
             $table->boolean('is_factured')->default(0)->nullable();
             $table->integer('percentageassurance')->nullable();
             $table->timestamps();
-            $table->foreign('movments_id')->references('id')->on('movments')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             //decimal('percentage', 8, 2); $table->foreign('cash_registers_id')->references('id')->on('cash_registers')->onDelete('cascade')->onUpdate('cascade');
 
         });
+
+        if (Schema::hasTable('factures')) {
+            Schema::table('factures', function (Blueprint $table) {
+                if (Schema::hasTable('movments')) {
+                    $table->foreign('movments_id')->references('id')->on('movments')->onDelete('cascade')->onUpdate('cascade');
+                }
+
+                if (Schema::hasTable('users')) {
+                    $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+                }
+            });
+        }
     }
 
     /**

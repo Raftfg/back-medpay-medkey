@@ -3,11 +3,12 @@
 namespace App\Core\Services;
 
 use App\Core\Models\Hospital;
-use App\Mail\PasswordResetMail;
+use App\Mail\AccountValidationMail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Modules\Acl\Entities\Permission;
 use Modules\Acl\Entities\User;
@@ -41,16 +42,27 @@ class TenantAdminService
 
         $tempPassword = Str::random(10);
 
+        $payload = [
+            'name' => 'Admin',
+            'prenom' => $hospital->name,
+            'telephone' => $adminPhone,
+            'password' => Hash::make($tempPassword),
+            'must_change_password' => true,
+            'status' => 'active',
+        ];
+
+        // Certaines bases tenant historiques n'ont pas toutes les colonnes (ex: status).
+        // On n'envoie que les champs réellement présents pour éviter les SQLSTATE 42S22.
+        $safePayload = [];
+        foreach ($payload as $column => $value) {
+            if (Schema::connection('tenant')->hasColumn('users', $column)) {
+                $safePayload[$column] = $value;
+            }
+        }
+
         $user = User::updateOrCreate(
             ['email' => $adminEmail],
-            [
-                'name' => 'Admin',
-                'prenom' => $hospital->name,
-                'telephone' => $adminPhone,
-                'password' => Hash::make($tempPassword),
-                'must_change_password' => true,
-                'status' => 'active',
-            ]
+            $safePayload
         );
 
         $isFreePlan = ($hospital->plan === 'free');
@@ -117,14 +129,20 @@ class TenantAdminService
 
             $token = Password::createToken($user);
             $encodedEmail = urlencode($user->email);
-            $resetLink = $this->buildFrontendResetLink($token, $encodedEmail);
+            $resetLink = $this->buildFrontendResetLink($hospital, $token, $encodedEmail);
 
-            Mail::to($user->email)->send(new PasswordResetMail($user, $resetLink));
+            Mail::to($user->email)->send(new AccountValidationMail($user, $resetLink));
+            $this->updateAccountValidationState($hospital, 'sent', [
+                'account_validation_sent_at' => now()->toIso8601String(),
+            ]);
         } catch (\Throwable $e) {
             Log::error("TenantAdminService: impossible d'envoyer l'email d'activation", [
                 'hospital_id' => $hospital->id,
                 'email' => $adminEmail,
                 'error' => $e->getMessage(),
+            ]);
+            $this->updateAccountValidationState($hospital, 'failed', [
+                'account_validation_failed_at' => now()->toIso8601String(),
             ]);
             throw $e;
         } finally {
@@ -135,14 +153,34 @@ class TenantAdminService
     /**
      * Construit l'URL front de création / réinitialisation du mot de passe.
      */
-    private function buildFrontendResetLink(string $token, string $encodedEmail): string
+    private function buildFrontendResetLink(Hospital $hospital, string $token, string $encodedEmail): string
     {
         $baseUrl = rtrim((string) config('premier.frontend.url.racine', 'http://localhost:8080'), '/');
         if (!str_starts_with($baseUrl, 'http://') && !str_starts_with($baseUrl, 'https://')) {
             $baseUrl = 'https://' . $baseUrl;
         }
 
-        return "{$baseUrl}/auth-pages/reset?token={$token}&email={$encodedEmail}";
+        $parsed = parse_url($baseUrl);
+        $scheme = $parsed['scheme'] ?? 'http';
+        $port = isset($parsed['port']) ? ':' . $parsed['port'] : '';
+        $path = $parsed['path'] ?? '';
+        $tenantFrontendBase = "{$scheme}://{$hospital->domain}{$port}{$path}";
+
+        return rtrim($tenantFrontendBase, '/') . "/auth-pages/reset?token={$token}&email={$encodedEmail}&validation=1";
+    }
+
+    private function updateAccountValidationState(Hospital $hospital, string $status, array $extra = []): void
+    {
+        $hospital->refresh();
+        $state = is_array($hospital->setup_wizard_state) ? $hospital->setup_wizard_state : [];
+        $state['account_validation_status'] = $status;
+        foreach ($extra as $key => $value) {
+            $state[$key] = $value;
+        }
+
+        $hospital->update([
+            'setup_wizard_state' => $state,
+        ]);
     }
 }
 

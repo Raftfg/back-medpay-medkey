@@ -24,11 +24,21 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('centre_id')->nullable();
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('signataires_id')->references('id')->on('signataires')->onDelete('cascade')->onUpdate('cascade');
 
             //decimal('percentage', 8, 2); $table->foreign('cash_registers_id')->references('id')->on('cash_registers')->onDelete('cascade')->onUpdate('cascade');
         });
+
+        if (Schema::hasTable('signataires_document')) {
+            Schema::table('signataires_document', function (Blueprint $table) {
+                if (Schema::hasTable('users')) {
+                    $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+                }
+
+                if (Schema::hasTable('signataires')) {
+                    $table->foreign('signataires_id')->references('id')->on('signataires')->onDelete('cascade')->onUpdate('cascade');
+                }
+            });
+        }
     }
 
     /**

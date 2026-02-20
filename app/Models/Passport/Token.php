@@ -11,5 +11,5 @@ class Token extends PassportToken
      *
      * @var string
      */
-    protected $connection = 'core';
+    protected $connection = 'tenant';
 }

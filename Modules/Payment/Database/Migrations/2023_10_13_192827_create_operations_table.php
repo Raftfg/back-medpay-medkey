@@ -31,11 +31,23 @@ return new class extends Migration
             $table->timestamp('deleted_at')->nullable();
 
             $table->timestamps();
-
-            $table->foreign('movement_id')->references('id')->on('movments')->restrictOnDelete();
-            $table->foreign('cash_register_id')->references('id')->on('cash_registers')->restrictOnDelete();
-            $table->foreign('user_id')->references('id')->on('users')->restrictOnDelete(); // Exemple de clé étrangère vers la table des utilisateurs (modifiez selon vos besoins).
         });
+
+        if (Schema::hasTable('operations')) {
+            Schema::table('operations', function (Blueprint $table) {
+                if (Schema::hasTable('movments')) {
+                    $table->foreign('movement_id')->references('id')->on('movments')->restrictOnDelete();
+                }
+
+                if (Schema::hasTable('cash_registers')) {
+                    $table->foreign('cash_register_id')->references('id')->on('cash_registers')->restrictOnDelete();
+                }
+
+                if (Schema::hasTable('users')) {
+                    $table->foreign('user_id')->references('id')->on('users')->restrictOnDelete(); // Exemple de clé étrangère vers la table des utilisateurs (modifiez selon vos besoins).
+                }
+            });
+        }
     }
 
     /**

@@ -11,5 +11,5 @@ class RefreshToken extends PassportRefreshToken
      *
      * @var string
      */
-    protected $connection = 'core';
+    protected $connection = 'tenant';
 }

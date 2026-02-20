@@ -19,22 +19,29 @@ return new class extends Migration
             $table->unsignedBigInteger('service_movments_id');
             $table->text('path')->nullable();
 
-            $table->foreign('movments_id')
-                ->references('id')
-                ->on('movments')
-                ->onUpdate('cascade')
-                ->onDelete('cascade'); // Option "on cascade"
-            // Ajoutez d'autres colonnes si nécessaire
-
-            $table->foreign('service_movments_id')
-                ->references('id')
-                ->on('service_movments')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
-
-
             $table->timestamps();
         });
+
+        if (Schema::hasTable('medical_files')) {
+            Schema::table('medical_files', function (Blueprint $table) {
+                if (Schema::hasTable('movments')) {
+                    $table->foreign('movments_id')
+                        ->references('id')
+                        ->on('movments')
+                        ->onUpdate('cascade')
+                        ->onDelete('cascade'); // Option "on cascade"
+                }
+
+                // Ajoutez d'autres colonnes si nécessaire
+                if (Schema::hasTable('service_movments')) {
+                    $table->foreign('service_movments_id')
+                        ->references('id')
+                        ->on('service_movments')
+                        ->onUpdate('cascade')
+                        ->onDelete('cascade');
+                }
+            });
+        }
     }
 
     /**

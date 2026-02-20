@@ -23,19 +23,27 @@ return new class extends Migration
             // $table->text('observation')->nullable();
             $table->string('numero_police', 20)->nullable(); // 20 est la longueur maximale, ajustez-la selon vos besoins
             $table->timestamps();
-
-            $table->foreign('patients_id')
-                ->references('id')
-                ->on('patients')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
-
-            $table->foreign('pack_id')
-                ->references('id')
-                ->on('packs')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
         });
+
+        if (Schema::hasTable('patient_insurances')) {
+            Schema::table('patient_insurances', function (Blueprint $table) {
+                if (Schema::hasTable('patients')) {
+                    $table->foreign('patients_id')
+                        ->references('id')
+                        ->on('patients')
+                        ->onUpdate('cascade')
+                        ->onDelete('cascade');
+                }
+
+                if (Schema::hasTable('packs')) {
+                    $table->foreign('pack_id')
+                        ->references('id')
+                        ->on('packs')
+                        ->onUpdate('cascade')
+                        ->onDelete('cascade');
+                }
+            });
+        }
     }
 
     /**

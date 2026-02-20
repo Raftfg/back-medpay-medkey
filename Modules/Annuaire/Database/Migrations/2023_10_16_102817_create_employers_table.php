@@ -49,11 +49,21 @@ return new class extends Migration
 
             $table->uuid('uuid')->nullable()->unique(); //nullable parce que la migration est impossible
             // $table->foreign('assurances_id')->references('id')->on('insurances')->restrictOnDelete();
-            $table->foreign('services_id')->references('id')->on('services')->restrictOnDelete();
-            $table->foreign('departments_id')->references('id')->on('departments')->restrictOnDelete();
 
             $table->timestamps();
         });
+
+        if (Schema::hasTable('employers')) {
+            Schema::table('employers', function (Blueprint $table) {
+                if (Schema::hasTable('services')) {
+                    $table->foreign('services_id')->references('id')->on('services')->restrictOnDelete();
+                }
+
+                if (Schema::hasTable('departments')) {
+                    $table->foreign('departments_id')->references('id')->on('departments')->restrictOnDelete();
+                }
+            });
+        }
     }
 
     /**

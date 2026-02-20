@@ -31,14 +31,18 @@ return new class extends Migration
             $table->unsignedBigInteger('patients_id');
             $table->string('active_services_code');
 
-            $table->foreign('patients_id')
-                ->references('id')
-                ->on('patients')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
-
             $table->timestamps();
         });
+
+        if (Schema::hasTable('movments') && Schema::hasTable('patients')) {
+            Schema::table('movments', function (Blueprint $table) {
+                $table->foreign('patients_id')
+                    ->references('id')
+                    ->on('patients')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
+            });
+        }
     }
 
     /**

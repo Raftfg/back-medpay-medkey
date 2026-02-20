@@ -35,10 +35,20 @@ return new class extends Migration
             $table->timestamp('deleted_at')->nullable();
             $table->boolean('is_synced')->default(0);
             $table->timestamps();
-            $table->foreign('cash_registers_id')->references('id')->on('cash_registers')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('cashier_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
         });
+
+        if (Schema::hasTable('historical_open_closes')) {
+            Schema::table('historical_open_closes', function (Blueprint $table) {
+                if (Schema::hasTable('cash_registers')) {
+                    $table->foreign('cash_registers_id')->references('id')->on('cash_registers')->onDelete('cascade')->onUpdate('cascade');
+                }
+
+                if (Schema::hasTable('users')) {
+                    $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+                    $table->foreign('cashier_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+                }
+            });
+        }
     }
 
     /**

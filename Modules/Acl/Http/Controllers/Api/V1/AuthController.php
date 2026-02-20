@@ -2,6 +2,7 @@
 
 namespace Modules\Acl\Http\Controllers\Api\V1;
 
+use App\Core\Models\Hospital;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
@@ -583,7 +584,10 @@ class AuthController extends \App\Http\Controllers\Api\V1\ApiController
                 
             if ($user != null) {
                 $user->password = Hash::make($request->password);
+                $user->must_change_password = false;
                 $user->save();
+
+                $this->markAccountValidationAsValidated();
                 
                 Log::info('Mot de passe réinitialisé avec succès', [
                     'user_id' => $user->id,
@@ -701,4 +705,31 @@ class AuthController extends \App\Http\Controllers\Api\V1\ApiController
     //         'message' => 'Email envoyé avec succès',
     //     ]);
     // }
+
+    private function markAccountValidationAsValidated(): void
+    {
+        try {
+            $hospital = \App\Services\TenantService::current();
+            if (! $hospital) {
+                return;
+            }
+
+            $coreHospital = Hospital::find($hospital->id);
+            if (! $coreHospital) {
+                return;
+            }
+
+            $state = is_array($coreHospital->setup_wizard_state) ? $coreHospital->setup_wizard_state : [];
+            $state['account_validation_status'] = 'validated';
+            $state['account_validated_at'] = now()->toIso8601String();
+
+            $coreHospital->update([
+                'setup_wizard_state' => $state,
+            ]);
+        } catch (\Throwable $e) {
+            Log::warning('Impossible de marquer la validation de compte onboarding', [
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
 }

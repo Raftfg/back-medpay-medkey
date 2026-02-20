@@ -27,22 +27,18 @@ return new class extends Migration
                     ->nullable()
                     ->after('admission_type')
                     ->comment('ID du médecin responsable de l\'admission');
-                
-                // Ajouter la clé étrangère vers la table users
-                // Note: On ne peut pas ajouter la foreign key si la table users n'existe pas encore
-                // ou si elle utilise une connexion différente (tenant)
-                try {
-                    $table->foreign('responsible_doctor_id')
-                        ->references('id')
-                        ->on('users')
-                        ->onUpdate('cascade')
-                        ->onDelete('set null');
-                } catch (\Exception $e) {
-                    // Si la foreign key ne peut pas être créée, on continue sans elle
-                    // Cela peut arriver si la table users n'existe pas encore ou utilise une autre connexion
-                }
             }
         });
+
+        if (Schema::hasTable('movments') && Schema::hasColumn('movments', 'responsible_doctor_id') && Schema::hasTable('users')) {
+            Schema::table('movments', function (Blueprint $table) {
+                $table->foreign('responsible_doctor_id')
+                    ->references('id')
+                    ->on('users')
+                    ->onUpdate('cascade')
+                    ->onDelete('set null');
+            });
+        }
     }
 
     /**

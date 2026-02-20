@@ -55,6 +55,13 @@ class AppServiceProvider extends ServiceProvider
             \Laravel\Passport\Passport::useRefreshTokenModel(\App\Models\Passport\RefreshToken::class);
             \Laravel\Passport\Passport::usePersonalAccessClientModel(\App\Models\Passport\PersonalAccessClient::class);
             \Laravel\Passport\Passport::useAuthCodeModel(\App\Models\Passport\AuthCode::class);
+
+            // En multi-tenant, le client "personal access" configuré (CORE) peut être absent en base tenant.
+            // On utilise un ClientRepository qui retombe sur oauth_personal_access_clients si find() renvoie null.
+            $this->app->singleton(\Laravel\Passport\ClientRepository::class, function ($app) {
+                $config = $app->make('config')->get('passport.personal_access_client');
+                return new \App\Core\Passport\TenantAwareClientRepository($config['id'] ?? null, $config['secret'] ?? null);
+            });
         }
 
     }

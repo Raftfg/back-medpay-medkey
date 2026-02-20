@@ -11,5 +11,5 @@ class AuthCode extends PassportAuthCode
      *
      * @var string
      */
-    protected $connection = 'core';
+    protected $connection = 'tenant';
 }

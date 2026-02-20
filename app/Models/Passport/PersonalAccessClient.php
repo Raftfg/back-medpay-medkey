@@ -11,5 +11,5 @@ class PersonalAccessClient extends PassportPersonalAccessClient
      *
      * @var string
      */
-    protected $connection = 'core';
+    protected $connection = 'tenant';
 }

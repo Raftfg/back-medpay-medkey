@@ -29,24 +29,31 @@ return new class extends Migration
             // Ajouter l'index pour améliorer les performances
             $table->index('hospital_id');
             
-            // Ajouter la foreign key vers hospitals
-            $table->foreign('hospital_id')
-                ->references('id')
-                ->on('hospitals')
-                ->onUpdate('cascade')
-                ->onDelete('restrict'); // Empêche la suppression d'un hôpital s'il a des utilisateurs
+            // En mode multi-tenant database-per-tenant, la table hospitals n'existe
+            // pas forcément dans la base tenant (elle est dans CORE).
+            // On n'ajoute donc la FK que si la table cible existe.
+            if (Schema::hasTable('hospitals')) {
+                $table->foreign('hospital_id')
+                    ->references('id')
+                    ->on('hospitals')
+                    ->onUpdate('cascade')
+                    ->onDelete('restrict'); // Empêche la suppression d'un hôpital s'il a des utilisateurs
+            }
         });
 
         // Assigner les utilisateurs existants au premier hôpital actif
-        $firstHospital = DB::table('hospitals')
-            ->where('status', 'active')
-            ->orderBy('id')
-            ->first();
+        // uniquement si la table hospitals existe sur la connexion courante.
+        if (Schema::hasTable('hospitals')) {
+            $firstHospital = DB::table('hospitals')
+                ->where('status', 'active')
+                ->orderBy('id')
+                ->first();
 
-        if ($firstHospital) {
-            DB::table('users')
-                ->whereNull('hospital_id')
-                ->update(['hospital_id' => $firstHospital->id]);
+            if ($firstHospital) {
+                DB::table('users')
+                    ->whereNull('hospital_id')
+                    ->update(['hospital_id' => $firstHospital->id]);
+            }
         }
     }
 
@@ -58,8 +65,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // Supprimer la foreign key
-            $table->dropForeign(['hospital_id']);
+            // Supprimer la foreign key si elle existe.
+            if (Schema::hasTable('hospitals')) {
+                $table->dropForeign(['hospital_id']);
+            }
             
             // Supprimer l'index
             $table->dropIndex(['hospital_id']);

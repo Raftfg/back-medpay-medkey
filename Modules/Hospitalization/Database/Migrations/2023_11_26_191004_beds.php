@@ -22,16 +22,25 @@ return new class extends Migration
             $table->unsignedBigInteger('room_id')->index();
             $table->unsignedBigInteger('patient_id')->index()->nullable()->default(null);
             $table->unsignedBigInteger('user_id')->index()->nullable()->default(null); // Store the ID of the user that is executing an action on the resource.
-            
-            $table->foreign('room_id')->references('id')->on('rooms')->onDelete('cascade');
-            $table->foreign('patient_id')->references('id')->on('patients')->onDelete('set null');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null'); // Prevent the deletion of the bed associated to a user when the user is deleted
-            
+
             // Additional attributes
             $table->integer('is_synced')->default(0); // To know either the data is synchronized or not, defined as not synchronized by default.
             $table->uuid('uuid')->nullable()->unique(); // Store the UUID of the resource.
             $table->timestamp('deleted_at')->nullable(); // To apply soft delete.
             $table->timestamps();
+        });
+
+        // En provisioning multi-module, l'ordre de création peut varier.
+        Schema::table('beds', function (Blueprint $table) {
+            if (Schema::hasTable('rooms')) {
+                $table->foreign('room_id')->references('id')->on('rooms')->onDelete('cascade');
+            }
+            if (Schema::hasTable('patients')) {
+                $table->foreign('patient_id')->references('id')->on('patients')->onDelete('set null');
+            }
+            if (Schema::hasTable('users')) {
+                $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+            }
         });
     }
 

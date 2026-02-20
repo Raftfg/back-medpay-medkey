@@ -24,7 +24,6 @@ return new class extends Migration
 
             // Clé étrangère liée à la table 'stock_id'
             $table->foreign('stock_product_id')->references('id')->on('stock_products')->onDelete('cascade'); 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
 
             //Additional attributes
             $table->integer('is_synced')->default(0); //To know either the data is synchronized or not, defined as not synchronized by default.
@@ -32,6 +31,12 @@ return new class extends Migration
             $table->timestamp('deleted_at')->nullable(); //To apply soft delete.
             $table->timestamps();
         });
+
+        if (Schema::hasTable('destocks') && Schema::hasTable('users')) {
+            Schema::table('destocks', function (Blueprint $table) {
+                $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+            });
+        }
     }
 
     /**

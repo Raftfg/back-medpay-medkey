@@ -25,10 +25,22 @@ class CreateAbsentsTable extends Migration
             $table->timestamps();
 
             $table->uuid('uuid')->nullable()->unique(); //nullable parce que la migration est impossible
+        });
 
-            $table->foreign('vacations_id')->references('id')->on('vacations')->restrictOnDelete();
-            $table->foreign('missions_id')->references('id')->on('missions')->restrictOnDelete();
-            $table->foreign('users_id')->references('id')->on('users')->restrictOnDelete();
+        // En provisioning multi-tenant, l'ordre de migrations peut varier.
+        // On pose les contraintes uniquement si les tables cibles existent.
+        Schema::table('absents', function (Blueprint $table) {
+            if (Schema::hasTable('vacations')) {
+                $table->foreign('vacations_id')->references('id')->on('vacations')->restrictOnDelete();
+            }
+
+            if (Schema::hasTable('missions')) {
+                $table->foreign('missions_id')->references('id')->on('missions')->restrictOnDelete();
+            }
+
+            if (Schema::hasTable('users')) {
+                $table->foreign('users_id')->references('id')->on('users')->restrictOnDelete();
+            }
         });
     }
 

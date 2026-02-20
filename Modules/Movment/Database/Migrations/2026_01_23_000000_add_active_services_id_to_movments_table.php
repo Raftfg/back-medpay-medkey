@@ -17,11 +17,13 @@ return new class extends Migration
             if (!Schema::hasColumn('movments', 'active_services_id')) {
                 $table->unsignedBigInteger('active_services_id')->nullable()->after('patients_id');
 
-                $table->foreign('active_services_id')
-                    ->references('id')
-                    ->on('services')
-                    ->onUpdate('cascade')
-                    ->onDelete('set null');
+                if (Schema::hasTable('services')) {
+                    $table->foreign('active_services_id')
+                        ->references('id')
+                        ->on('services')
+                        ->onUpdate('cascade')
+                        ->onDelete('set null');
+                }
             }
         });
     }

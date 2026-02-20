@@ -21,9 +21,18 @@ class CreateMissionParticipantsTable extends Migration
             $table->timestamps();
 
             $table->uuid('uuid')->nullable()->unique(); //nullable parce que la migration est impossible
+        });
 
-            $table->foreign('users_id')->references('id')->on('users')->restrictOnDelete();
-            $table->foreign('missions_id')->references('id')->on('missions')->restrictOnDelete();
+        // En provisioning multi-tenant, l'ordre des migrations modules peut varier.
+        // On ajoute les contraintes uniquement si les tables cibles existent.
+        Schema::table('mission_participants', function (Blueprint $table) {
+            if (Schema::hasTable('users')) {
+                $table->foreign('users_id')->references('id')->on('users')->restrictOnDelete();
+            }
+
+            if (Schema::hasTable('missions')) {
+                $table->foreign('missions_id')->references('id')->on('missions')->restrictOnDelete();
+            }
         });
     }
 

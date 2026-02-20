@@ -31,11 +31,13 @@ return new class extends Migration
             $table->index('hospital_id');
             
             // Ajouter la foreign key vers hospitals
-            $table->foreign('hospital_id')
-                ->references('id')
-                ->on('hospitals')
-                ->onUpdate('cascade')
-                ->onDelete('restrict');
+            if (Schema::hasTable('hospitals')) {
+                $table->foreign('hospital_id')
+                    ->references('id')
+                    ->on('hospitals')
+                    ->onUpdate('cascade')
+                    ->onDelete('restrict');
+            }
         });
 
         // Assigner les actes médicaux existants en fonction du hospital_id du service
@@ -60,7 +62,9 @@ return new class extends Migration
     {
         Schema::table('medical_acts', function (Blueprint $table) {
             if (Schema::hasColumn('medical_acts', 'hospital_id')) {
-                $table->dropForeign(['hospital_id']);
+                if (Schema::hasTable('hospitals')) {
+                    $table->dropForeign(['hospital_id']);
+                }
                 $table->dropIndex(['hospital_id']);
                 $table->dropColumn('hospital_id');
             }

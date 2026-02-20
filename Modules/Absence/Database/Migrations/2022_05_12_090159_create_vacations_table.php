@@ -29,10 +29,22 @@ class CreateVacationsTable extends Migration
             $table->timestamps();
 
             $table->uuid('uuid')->nullable()->unique(); //nullable parce que la migration est impossible
+        });
 
-            $table->foreign('departmentss_id')->references('id')->on('departmentss')->restrictOnDelete();
-            $table->foreign('users_id')->references('id')->on('users')->restrictOnDelete();
-            $table->foreign('type_vacations_id')->references('id')->on('type_vacations')->restrictOnDelete();
+        // En multi-tenant, l'ordre de chargement des migrations modules peut varier.
+        // On ajoute les contraintes seulement si les tables cibles existent déjà.
+        Schema::table('vacations', function (Blueprint $table) {
+            if (Schema::hasTable('departmentss')) {
+                $table->foreign('departmentss_id')->references('id')->on('departmentss')->restrictOnDelete();
+            }
+
+            if (Schema::hasTable('users')) {
+                $table->foreign('users_id')->references('id')->on('users')->restrictOnDelete();
+            }
+
+            if (Schema::hasTable('type_vacations')) {
+                $table->foreign('type_vacations_id')->references('id')->on('type_vacations')->restrictOnDelete();
+            }
         });
     }
 

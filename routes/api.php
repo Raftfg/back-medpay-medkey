@@ -46,6 +46,7 @@ use App\Http\Controllers\Api\V1\OnboardingWizardController;
         // =====================================================
         Route::post('public/tenants/register', [TenantRegistrationController::class, 'register']);
         Route::get('public/tenants/{uuid}/status', [TenantRegistrationController::class, 'status']);
+        Route::post('public/tenants/autologin/consume', [TenantRegistrationController::class, 'consumeAutologinToken']);
 
         // Routes protégées (auth + tenant) pour le wizard
         Route::group(['middleware' => ['auth:api', 'tenant', 'ensure.tenant.connection']], function () {

@@ -29,9 +29,18 @@ class CreateMissionsTable extends Migration
             $table->timestamps();
 
             $table->uuid('uuid')->nullable()->unique(); //nullable parce que la migration est impossible
+        });
 
-            $table->foreign('departmentss_id')->references('id')->on('departmentss')->onDelete("cascade");
-            $table->foreign('mission_head_id')->references('id')->on('users')->onDelete("cascade");
+        // En multi-tenant, l'ordre de chargement des migrations modules peut varier.
+        // On ajoute les contraintes seulement si les tables cibles existent déjà.
+        Schema::table('missions', function (Blueprint $table) {
+            if (Schema::hasTable('departmentss')) {
+                $table->foreign('departmentss_id')->references('id')->on('departmentss')->onDelete('cascade');
+            }
+
+            if (Schema::hasTable('users')) {
+                $table->foreign('mission_head_id')->references('id')->on('users')->onDelete('cascade');
+            }
         });
     }
 

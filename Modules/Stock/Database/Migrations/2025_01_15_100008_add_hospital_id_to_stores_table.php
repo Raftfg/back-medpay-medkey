@@ -30,11 +30,13 @@ return new class extends Migration
             $table->index('hospital_id');
             
             // Ajouter la foreign key vers hospitals
-            $table->foreign('hospital_id')
-                ->references('id')
-                ->on('hospitals')
-                ->onUpdate('cascade')
-                ->onDelete('restrict');
+            if (Schema::hasTable('hospitals')) {
+                $table->foreign('hospital_id')
+                    ->references('id')
+                    ->on('hospitals')
+                    ->onUpdate('cascade')
+                    ->onDelete('restrict');
+            }
         });
 
         // Assigner les magasins existants en fonction du hospital_id de l'utilisateur
@@ -63,7 +65,9 @@ return new class extends Migration
     {
         Schema::table('stores', function (Blueprint $table) {
             // Supprimer la foreign key
-            $table->dropForeign(['hospital_id']);
+            if (Schema::hasTable('hospitals')) {
+                $table->dropForeign(['hospital_id']);
+            }
             
             // Supprimer l'index
             $table->dropIndex(['hospital_id']);
