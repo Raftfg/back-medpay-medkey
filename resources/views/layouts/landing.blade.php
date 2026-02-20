@@ -54,7 +54,7 @@
 
         @media (min-width: 1200px) {
             #page-header .menu-wrapper {
-                margin-inline-start: 1.5rem;
+                margin-inline-start: 2.5rem;
             }
         }
 
@@ -132,6 +132,10 @@
                         <div class="switch-inner go-dark" title="Passer en mode sombre">
                             <i class="bi bi-moon icon"></i>
                         </div>
+                        <div class="mode-switcher ">
+              <div class="switch-inner go-light " title="Switch To Light Mode "><i class="bi bi-sun icon "></i></div>
+              <div class="switch-inner go-dark" title="Switch To Dark Mode "><i class="bi bi-moon icon "></i></div>
+            </div>
                     </div>
                 </div>
             </nav>
