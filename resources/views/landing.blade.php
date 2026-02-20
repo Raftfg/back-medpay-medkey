@@ -76,6 +76,75 @@
             color: #2f3542;
             text-transform: uppercase;
         }
+
+        #pricing-1 .row > [class*="col-"] {
+            display: flex;
+        }
+
+        #pricing-1 .price-plan {
+            display: flex;
+        }
+
+        #pricing-1 .plan {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #pricing-1 .plan-head {
+            min-height: 190px;
+        }
+
+        #pricing-1 .plan-price .price {
+            font-size: 2.25rem;
+            line-height: 1.15;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: flex-start;
+            gap: 0.2rem;
+        }
+
+        #pricing-1 .plan-price .currency-symbol {
+            font-size: 0.95rem;
+            margin-left: 0;
+            position: static;
+            top: auto;
+            right: auto;
+            vertical-align: super;
+            line-height: 1;
+        }
+
+        #pricing-1 .plan-details {
+            flex: 1 1 auto;
+            display: flex;
+        }
+
+        #pricing-1 .plan-list {
+            width: 100%;
+            margin-bottom: 0;
+        }
+
+        #pricing-1 .plan-feat {
+            line-height: 1.45;
+            margin-bottom: 0.45rem;
+        }
+
+        #pricing-1 .plan-feat .feat-text {
+            display: block;
+            overflow-wrap: anywhere;
+        }
+
+        #pricing-1 .plan-cta {
+            margin-top: auto;
+            padding-top: 0.6rem;
+        }
+
+        @media (max-width: 1199.98px) {
+            #pricing-1 .plan-head {
+                min-height: 175px;
+            }
+        }
     </style>
 
     <section class="page-hero hero-swiper-slider slide-effect d-flex align-items-center" id="page-hero">
@@ -297,13 +366,104 @@
     <section class="pricing mega-section" id="pricing-1">
         <div class="container">
             <div class="sec-heading">
-                <div class="content-area"><span class="pre-title">pricing plans</span><h2 class="title"><span class="hollow-text">affordable</span> pricing plans</h2></div>
+                <div class="content-area">
+                    <span class="pre-title">Nos offres</span>
+                    <h2 class="title"><span class="hollow-text">Tarifs</span> adaptés aux établissements de santé</h2>
+                    <p class="subtitle">Des plans pensés pour le contexte SIH Medkey, de la structure en démarrage au réseau hospitalier multi-sites.</p>
+                </div>
             </div>
             <div class="row">
-                <div class="col-12 col-md-6 col-xl-3 mx-auto price-plan"><div class="plan"><div class="plan-head"><i class="flaticon-nft-1 plan-icon"></i><h4 class="plane-name">free plan</h4><div class="plan-price"><h3 class="price">00<sup class="currency-symbol">$</sup></h3><span class="per">per project</span></div></div><div class="plan-details"><ul class="plan-list"><li class="plan-feat"><span class="feat-text">150 Lorem, ipsum dolor.</span></li><li class="plan-feat"><span class="feat-text">20 Lorem ipsum dolor sit.</span></li><li class="plan-feat"><span class="feat-text">Lorem ipsum dolor sit.</span></li><li class="plan-feat"><span class="feat-text">free Lorem ipsum dolor.</span></li><li class="plan-feat"><span class="feat-text">added Lorem ipsum dolor.</span></li></ul></div><div class="plan-cta"><a class="cta-btn btn-outline" href="{{ \Illuminate\Support\Facades\Route::has('register') ? route('register') : '/register' }}">select plan</a></div></div></div>
-                <div class="col-12 col-md-6 col-xl-3 mx-auto price-plan"><div class="plan"><div class="plan-head"><i class="flaticon-virtual-reality plan-icon"></i><h4 class="plane-name">standerd plan</h4><div class="plan-price"><h3 class="price">85<sup class="currency-symbol">$</sup></h3><span class="per">per project</span></div></div><div class="plan-details"><ul class="plan-list"><li class="plan-feat"><span class="feat-text">150 Lorem, ipsum dolor.</span></li><li class="plan-feat"><span class="feat-text">20 Lorem ipsum dolor sit.</span></li><li class="plan-feat"><span class="feat-text">Lorem ipsum dolor sit.</span></li><li class="plan-feat"><span class="feat-text">free Lorem ipsum dolor.</span></li><li class="plan-feat"><span class="feat-text">added Lorem ipsum dolor.</span></li></ul></div><div class="plan-cta"><a class="cta-btn btn-outline" href="{{ \Illuminate\Support\Facades\Route::has('register') ? route('register') : '/register' }}">select plan</a></div></div></div>
-                <div class="col-12 col-md-6 col-xl-3 mx-auto price-plan"><div class="plan featured"><div class="plan-head"><i class="flaticon-box plan-icon"></i><h4 class="plane-name">pro plan</h4><div class="plan-price"><h3 class="price">150<sup class="currency-symbol">$</sup></h3><span class="per">per project</span></div></div><div class="plan-details"><ul class="plan-list"><li class="plan-feat"><span class="feat-text">150 Lorem, ipsum dolor.</span></li><li class="plan-feat"><span class="feat-text">20 Lorem ipsum dolor sit.</span></li><li class="plan-feat"><span class="feat-text">Lorem ipsum dolor sit.</span></li><li class="plan-feat"><span class="feat-text">free Lorem ipsum dolor.</span></li><li class="plan-feat"><span class="feat-text">added Lorem ipsum dolor.</span></li></ul></div><div class="plan-cta"><a class="cta-btn btn-outline" href="{{ \Illuminate\Support\Facades\Route::has('register') ? route('register') : '/register' }}">select plan</a></div></div></div>
-                <div class="col-12 col-md-6 col-xl-3 mx-auto price-plan"><div class="plan"><div class="plan-head"><i class="flaticon-basic-shapes plan-icon"></i><h4 class="plane-name">ultimate plan</h4><div class="plan-price"><h3 class="price">210<sup class="currency-symbol">$</sup></h3><span class="per">per project</span></div></div><div class="plan-details"><ul class="plan-list"><li class="plan-feat"><span class="feat-text">150 Lorem, ipsum dolor.</span></li><li class="plan-feat"><span class="feat-text">20 Lorem ipsum dolor sit.</span></li><li class="plan-feat"><span class="feat-text">Lorem ipsum dolor sit.</span></li><li class="plan-feat"><span class="feat-text">free Lorem ipsum dolor.</span></li><li class="plan-feat"><span class="feat-text">added Lorem ipsum dolor.</span></li></ul></div><div class="plan-cta"><a class="cta-btn btn-outline" href="{{ route('contact') }}">contact us</a></div></div></div>
+                <div class="col-12 col-md-6 col-xl-3 mx-auto price-plan">
+                    <div class="plan">
+                        <div class="plan-head">
+                            <i class="flaticon-nft-1 plan-icon"></i>
+                            <h4 class="plane-name">Plan Gratuit</h4>
+                            <div class="plan-price">
+                                <h3 class="price">0<sup class="currency-symbol">FCFA</sup></h3>
+                                <span class="per">par mois</span>
+                            </div>
+                        </div>
+                        <div class="plan-details">
+                            <ul class="plan-list">
+                                <li class="plan-feat"><span class="feat-text">Gestion des Patients</span></li>
+                                <li class="plan-feat"><span class="feat-text">Gestion Mouvement Patient</span></li>
+                                <li class="plan-feat"><span class="feat-text">Gestion Pharmacies</span></li>
+                                <li class="plan-feat"><span class="feat-text">Gestion de la caisse</span></li>
+                                <li class="plan-feat"><span class="feat-text">Support standard</span></li>
+                            </ul>
+                        </div>
+                        <div class="plan-cta"><a class="cta-btn btn-outline" href="{{ \Illuminate\Support\Facades\Route::has('register') ? route('register') : '/register' }}">Commencer</a></div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 col-xl-3 mx-auto price-plan">
+                    <div class="plan">
+                        <div class="plan-head">
+                            <i class="flaticon-virtual-reality plan-icon"></i>
+                            <h4 class="plane-name">Plan Clinique</h4>
+                            <div class="plan-price">
+                                <h3 class="price">49<sup class="currency-symbol">FCFA</sup></h3>
+                                <span class="per">par mois</span>
+                            </div>
+                        </div>
+                        <div class="plan-details">
+                            <ul class="plan-list">
+                                <li class="plan-feat"><span class="feat-text">Rendez-vous & consultations</span></li>
+                                <li class="plan-feat"><span class="feat-text">Hospitalisation & lits</span></li>
+                                <li class="plan-feat"><span class="feat-text">Facturation, paiements & remboursements</span></li>
+                                <li class="plan-feat"><span class="feat-text">Stock & administration des produits</span></li>
+                                <li class="plan-feat"><span class="feat-text">Tableaux de bord opérationnels</span></li>
+                            </ul>
+                        </div>
+                        <div class="plan-cta"><a class="cta-btn btn-outline" href="{{ \Illuminate\Support\Facades\Route::has('register') ? route('register') : '/register' }}">Choisir ce plan</a></div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 col-xl-3 mx-auto price-plan">
+                    <div class="plan featured">
+                        <div class="plan-head">
+                            <i class="flaticon-box plan-icon"></i>
+                            <h4 class="plane-name">Plan Hôpital</h4>
+                            <div class="plan-price">
+                                <h3 class="price">99<sup class="currency-symbol">FCFA</sup></h3>
+                                <span class="per">par mois</span>
+                            </div>
+                        </div>
+                        <div class="plan-details">
+                            <ul class="plan-list">
+                                <li class="plan-feat"><span class="feat-text">Tous les modules cliniques & administratifs</span></li>
+                                <li class="plan-feat"><span class="feat-text">Annuaire professionnel & suivi des activités</span></li>
+                                <li class="plan-feat"><span class="feat-text">Recouvrement & contrôle financier avancé</span></li>
+                                <li class="plan-feat"><span class="feat-text">Traçabilité, alertes & notifications</span></li>
+                                <li class="plan-feat"><span class="feat-text">Support prioritaire</span></li>
+                            </ul>
+                        </div>
+                        <div class="plan-cta"><a class="cta-btn btn-outline" href="{{ \Illuminate\Support\Facades\Route::has('register') ? route('register') : '/register' }}">Choisir ce plan</a></div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 col-xl-3 mx-auto price-plan">
+                    <div class="plan">
+                        <div class="plan-head">
+                            <i class="flaticon-basic-shapes plan-icon"></i>
+                            <h4 class="plane-name">Plan Réseau / CHU</h4>
+                            <div class="plan-price">
+                                <h3 class="price">Sur devis</h3>
+                                <span class="per">multi-sites</span>
+                            </div>
+                        </div>
+                        <div class="plan-details">
+                            <ul class="plan-list">
+                                <li class="plan-feat"><span class="feat-text">Déploiement multi-établissements</span></li>
+                                <li class="plan-feat"><span class="feat-text">Paramétrage avancé par site</span></li>
+                                <li class="plan-feat"><span class="feat-text">Interopérabilité & reporting consolidé</span></li>
+                                <li class="plan-feat"><span class="feat-text">Gouvernance des accès centralisée</span></li>
+                                <li class="plan-feat"><span class="feat-text">Accompagnement projet dédié</span></li>
+                            </ul>
+                        </div>
+                        <div class="plan-cta"><a class="cta-btn btn-outline" href="{{ route('contact') }}">Nous contacter</a></div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -322,18 +482,7 @@
         </div>
     </section>
 
-    <section class="blog blog-home mega-section" id="blog">
-        <div class="container">
-            <div class="sec-heading">
-                <div class="content-area"><span class="pre-title">blog</span><h2 class="title">latest <span class="hollow-text">news</span></h2></div>
-            </div>
-            <div class="row">
-                <div class="col-12 col-lg-4"><div class="post-box"><a class="post-link" href="#0"><div class="post-img-wrapper"><img class="post-img" src="/images/landing/blog/1.jpg" alt=""><span class="post-date"><span class="day">05</span>oct 2022</span></div></a><div class="post-summary"><div class="post-info"><a class="info post-cat" href="#0"><i class="bi bi-bookmark icon"></i>hosting</a><a class="info post-author" href="#0"><i class="bi bi-person icon"></i>Allan Moore</a></div><div class="post-text"><h2 class="post-title">How litespeed technology works to speed up your site</h2><p class="post-excerpt">Lorem ipsum dolor sit, amet consectetur adipisicing elit.Iure nulla dolorem, voluptates molestiae</p></div></div></div></div>
-                <div class="col-12 col-lg-4"><div class="post-box"><a class="post-link" href="#0"><div class="post-img-wrapper"><img class="post-img" src="/images/landing/blog/2.jpg" alt=""><span class="post-date"><span class="day">15</span>sep 2022</span></div></a><div class="post-summary"><div class="post-info"><a class="info post-cat" href="#0"><i class="bi bi-bookmark icon"></i>web dev</a><a class="info post-author" href="#0"><i class="bi bi-person icon"></i>mhmd amin</a></div><div class="post-text"><h2 class="post-title">give your website a new look and feel with themes</h2><p class="post-excerpt">Lorem ipsum dolor sit, amet consectetur adipisicing elit.Iure nulla dolorem, voluptates molestiae</p></div></div></div></div>
-                <div class="col-12 col-lg-4"><div class="post-box"><a class="post-link" href="#0"><div class="post-img-wrapper"><img class="post-img" src="/images/landing/blog/3.jpg" alt=""><span class="post-date"><span class="day">27</span>aug 2022</span></div></a><div class="post-summary"><div class="post-info"><a class="info post-cat" href="#0"><i class="bi bi-bookmark icon"></i>SEO</a><a class="info post-author" href="#0"><i class="bi bi-person icon"></i>yusuf amin</a></div><div class="post-text"><h2 class="post-title">the role of domain names in SEO world explained</h2><p class="post-excerpt">Lorem ipsum dolor sit, amet consectetur adipisicing elit.Iure nulla dolorem, voluptates molestiae</p></div></div></div></div>
-            </div>
-        </div>
-    </section>
+   
 
     <section class="take-action elf-section has-dark-bg" id="take-action">
         <div class="overlay-photo-image-bg" data-bg-img="/images/landing/sections-bg-images/2.jpg" data-bg-opacity=".2"></div>
