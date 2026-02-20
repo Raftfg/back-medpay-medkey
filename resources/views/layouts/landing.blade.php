@@ -37,6 +37,9 @@
         #page-header .nav-cta-area .cta-link {
             white-space: nowrap;
             margin-bottom: 0;
+            padding: 0.58rem 1.35rem;
+            font-size: 1rem;
+            line-height: 1.05;
         }
 
         #page-header .links-list {
