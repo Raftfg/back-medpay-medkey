@@ -39,6 +39,12 @@
             margin-bottom: 0;
         }
 
+        @media (min-width: 1200px) {
+            #page-header .menu-wrapper {
+                margin-inline-start: 1.5rem;
+            }
+        }
+
         @media (max-width: 1199.98px) {
             #page-header .nav-cta-area {
                 display: none;
