@@ -475,7 +475,7 @@
     <section class="testimonials testimonials-1-col has-dark-bg mega-section" id="testimonials-img-bg">
         <div class="overlay-photo-image-bg parallax" data-bg-img="/images/landing/sections-bg-images/1.jpg" data-bg-opacity=".25"></div>
         <div class="container">
-            <div class="sec-heading centered"><div class="content-area"><span class="pre-title">testimonials</span><h2 class="title">customers <span class="hollow-text">testmonials</span></h2></div></div>
+            <div class="sec-heading centered"><div class="content-area"><span class="pre-title">Témoignages</span><h2 class="title">Ce que disent nos <span class="hollow-text">clients</span></h2></div></div>
             <div class="swiper-container">
                 <div class="swiper-wrapper">
                     <div class="swiper-slide"><div class="testmonial-card"><div class="testimonial-content"><div class="customer-img"><img class="img-fluid" src="/images/landing/testimonials/1.png" alt="Dr Jean-Pierre Matumona"></div><div class="customer-testimonial"><p class="testimonial-text">Medkey a transformé notre gestion des urgences. Le suivi des patients en temps réel a réduit nos délais de prise en charge de 40%.</p><div class="customer-info"><h6 class="customer-name">Dr. Jean-Pierre Matumona</h6><span class="customer-role">Chef des Urgences — Clinique Ngaliema, Kinshasa</span></div></div></div></div></div>

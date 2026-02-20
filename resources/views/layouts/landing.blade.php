@@ -148,6 +148,14 @@
         #page-footer .footer-text-about-us {
             opacity: 0.9;
         }
+
+        #page-footer .contact-info-card,
+        #page-footer .contact-info-card span,
+        #page-footer .contact-info-card a {
+            font-size: 0.7rem;
+            font-weight: 400;
+            line-height: 1.35;
+        }
     </style>
 </head>
 <body class="@yield('body_class', 'dark-theme')">
@@ -216,16 +224,16 @@
         <div class="container">
             <div class="row footer-cols">
                 <div class="col-12 col-md-8 col-lg-4 footer-col">
-                    <img class="img-fluid footer-logo" loading="lazy" src="/images/landing/logo/logo-colored.png" alt="Medkey">
+                    <img class="img-fluid footer-logo" loading="lazy" src="/images/landing/logo/logo2.png" alt="Medkey">
                     <div class="footer-col-content-wrapper">
                         <p class="footer-text-about-us">
                             Le SIH cloud qui modernise vos établissements de santé, du parcours patient à la performance financière.
                         </p>
                         <div class="sc-wrapper dir-row sc-flat">
                             <ul class="sc-list">
-                                <li class="sc-item" title="LinkedIn"><a class="sc-link" href="#0"><i class="fab fa-linkedin-in sc-icon"></i></a></li>
-                                <li class="sc-item" title="X"><a class="sc-link" href="#0"><i class="fab fa-x-twitter sc-icon"></i></a></li>
-                                <li class="sc-item" title="Facebook"><a class="sc-link" href="#0"><i class="fab fa-facebook-f sc-icon"></i></a></li>
+                                <li class="sc-item" title="LinkedIn"><a class="sc-link" href="https://www.linkedin.com/company/akasigroup/" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin-in sc-icon"></i></a></li>
+                                <li class="sc-item" title="X"><a class="sc-link" href="https://x.com/GroupAkasi" target="_blank" rel="noopener noreferrer"><i class="fab fa-x-twitter sc-icon"></i></a></li>
+                                <li class="sc-item" title="Facebook"><a class="sc-link" href="https://www.facebook.com/akasiholding" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook-f sc-icon"></i></a></li>
                                 <li class="sc-item" title="YouTube"><a class="sc-link" href="#0"><i class="fab fa-youtube sc-icon"></i></a></li>
                             </ul>
                         </div>
@@ -258,16 +266,24 @@
                     <h2 class="footer-col-title">Contact</h2>
                     <div class="footer-col-content-wrapper">
                         <div class="contact-info-card">
-                            <i class="bi bi-envelope icon"></i>
-                            <a href="mailto:{{ config('custom.contact_to_address') }}">{{ config('custom.contact_to_address') }}</a>
-                        </div>
-                        <div class="contact-info-card">
-                            <i class="bi bi-geo-alt icon"></i>
-                            <span>{{ config('custom.contact_address') }}</span>
+                            <i class="bi bi-telephone icon"></i>
+                            <span>ASHUA NH, USA: <a href="tel:+16038527935">(1 603) 852 79 35</a></span>
                         </div>
                         <div class="contact-info-card">
                             <i class="bi bi-telephone icon"></i>
-                            <a href="tel:{{ config('custom.contact_phone_href') }}">{{ config('custom.contact_phone') }}</a>
+                            <span>COTONOU, BENIN: <a href="tel:+2290195621919">(229) 01 95 62 19 19</a></span>
+                        </div>
+                        <div class="contact-info-card">
+                            <i class="bi bi-telephone icon"></i>
+                            <span>ABIDJAN, COTE D'IVOIRE: <a href="tel:+2250767257112">(225) 07 67 25 71 12</a></span>
+                        </div>
+                        <div class="contact-info-card">
+                            <i class="bi bi-telephone icon"></i>
+                            <span>NAIROBI, KENYA: <a href="tel:+254741896511">(254) 741 89 65 11</a></span>
+                        </div>
+                        <div class="contact-info-card">
+                            <i class="bi bi-envelope icon"></i>
+                            <a href="mailto:akasi-commercial@akasigroup.com">akasi-commercial@akasigroup.com</a>
                         </div>
                     </div>
                 </div>
