@@ -1,5 +1,0 @@
-# Migrations Tenant
-
-Ce dossier contient les migrations qui seront exécutées sur chaque base de données tenant (hôpital).
-
-Les migrations existantes des modules seront copiées ici lors de la Phase 3 (Migration des données).
