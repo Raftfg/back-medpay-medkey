@@ -1,33 +1,18 @@
 <?php
 
-use App\Http\Controllers\PayementController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\LandingController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
-//use App\Http\Controllers\TransactionController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
- */
+Route::get('/', LandingController::class)->name('home');
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::view('/acces-gratuit', 'auth.free-access')->name('free-access');
+Route::view('/ressources', 'resources')->name('resources');
+Route::view('/faq', 'faq')->name('faq');
+Route::view('/mentions-legales', 'legal.mentions')->name('legal.mentions');
+Route::view('/confidentialite', 'legal.confidentialite')->name('legal.confidentialite');
+Route::view('/conditions', 'legal.conditions')->name('legal.conditions');
+Route::view('/cookies', 'legal.cookies')->name('legal.cookies');
 
-
-// Route::post('/update-transaction-amount', [TransactionController::class, 'updateTransactionAmount'])->name('updateTransactionAmount');
-
-
-
-
-
-// Route::get('/', [PayementController::class, 'index']);
-// Route::post('/smspayer_meth', [PayementController::class, 'mtn']);
-// Route::get('/', [PayementController::class, 'index']);
-// Route::post('/smspayer_meth', [PayementController::class, 'mtn']);
+Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');

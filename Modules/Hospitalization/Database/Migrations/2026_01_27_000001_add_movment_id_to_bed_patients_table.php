@@ -15,7 +15,9 @@ return new class extends Migration
             // Vérifier si la colonne n'existe pas déjà
             if (!Schema::hasColumn('bed_patients', 'movment_id')) {
                 $table->unsignedBigInteger('movment_id')->nullable()->after('patient_id');
-                $table->foreign('movment_id')->references('id')->on('movments')->onDelete('set null');
+                if (Schema::hasTable('movments')) {
+                    $table->foreign('movment_id')->references('id')->on('movments')->onDelete('set null');
+                }
                 $table->index('movment_id');
             }
         });

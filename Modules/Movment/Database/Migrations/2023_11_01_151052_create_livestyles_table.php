@@ -24,14 +24,19 @@ return new class extends Migration
             $table->unsignedBigInteger("movments_id")->nullable();
 
             $table->unsignedBigInteger("patients_id");
-            $table->foreign('patients_id')
-                ->references('id')
-                ->on('patients')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
 
             $table->timestamps();
         });
+
+        if (Schema::hasTable('livestyles') && Schema::hasTable('patients')) {
+            Schema::table('livestyles', function (Blueprint $table) {
+                $table->foreign('patients_id')
+                    ->references('id')
+                    ->on('patients')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
+            });
+        }
     }
 
     /**

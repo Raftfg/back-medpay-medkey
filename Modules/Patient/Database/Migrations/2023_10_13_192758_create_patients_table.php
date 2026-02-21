@@ -46,38 +46,52 @@ class CreatePatientsTable extends Migration
             $table->unsignedBigInteger('communes_id')->nullable();
             $table->unsignedBigInteger('arrondissements_id')->nullable();
 
-            $table->foreign('pays_id')
-                ->references('id')
-                ->on('pays')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
-
-            $table->foreign('departements_id')
-                ->references('id')
-                ->on('departements')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
-
-            $table->foreign('communes_id')
-                ->references('id')
-                ->on('communes')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
-
-            $table->foreign('arrondissements_id')
-                ->references('id')
-                ->on('arrondissements')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
-
-            $table->foreign('users_id')
-                ->references('id')
-                ->on('users')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
-
             $table->timestamps();
         });
+
+        if (Schema::hasTable('patients')) {
+            Schema::table('patients', function (Blueprint $table) {
+                if (Schema::hasTable('pays')) {
+                    $table->foreign('pays_id')
+                        ->references('id')
+                        ->on('pays')
+                        ->onUpdate('cascade')
+                        ->onDelete('cascade');
+                }
+
+                if (Schema::hasTable('departements')) {
+                    $table->foreign('departements_id')
+                        ->references('id')
+                        ->on('departements')
+                        ->onUpdate('cascade')
+                        ->onDelete('cascade');
+                }
+
+                if (Schema::hasTable('communes')) {
+                    $table->foreign('communes_id')
+                        ->references('id')
+                        ->on('communes')
+                        ->onUpdate('cascade')
+                        ->onDelete('cascade');
+                }
+
+                if (Schema::hasTable('arrondissements')) {
+                    $table->foreign('arrondissements_id')
+                        ->references('id')
+                        ->on('arrondissements')
+                        ->onUpdate('cascade')
+                        ->onDelete('cascade');
+                }
+
+                if (Schema::hasTable('users')) {
+                    $table->foreign('users_id')
+                        ->references('id')
+                        ->on('users')
+                        ->onUpdate('cascade')
+                        ->onDelete('cascade');
+                }
+            });
+        }
     }
 
     /**

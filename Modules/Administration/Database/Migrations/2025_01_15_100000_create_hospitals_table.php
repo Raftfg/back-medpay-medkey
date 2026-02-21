@@ -45,13 +45,6 @@ return new class extends Migration
             $table->boolean('is_synced')->default(0);
             $table->timestamp('deleted_at')->nullable();
             
-            // Foreign key vers users (créateur)
-            $table->foreign('created_by')
-                ->references('id')
-                ->on('users')
-                ->onUpdate('cascade')
-                ->onDelete('set null');
-            
             $table->timestamps();
             
             // Index pour améliorer les performances
@@ -59,6 +52,17 @@ return new class extends Migration
             $table->index('status');
             $table->index('slug');
         });
+
+        if (Schema::hasTable('hospitals') && Schema::hasTable('users')) {
+            Schema::table('hospitals', function (Blueprint $table) {
+                // Foreign key vers users (créateur)
+                $table->foreign('created_by')
+                    ->references('id')
+                    ->on('users')
+                    ->onUpdate('cascade')
+                    ->onDelete('set null');
+            });
+        }
     }
 
     /**

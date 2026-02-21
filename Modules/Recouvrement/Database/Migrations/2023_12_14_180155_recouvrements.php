@@ -27,9 +27,13 @@ return new class extends Migration
             $table->date('date_recouvrement');
             $table->timestamp('deleted_at')->nullable();
             $table->timestamps();
-
-            $table->foreign('movement_id')->references('id')->on('movments');
         });
+
+        if (Schema::hasTable('recouvrements') && Schema::hasTable('movments')) {
+            Schema::table('recouvrements', function (Blueprint $table) {
+                $table->foreign('movement_id')->references('id')->on('movments');
+            });
+        }
     }
 
     /**

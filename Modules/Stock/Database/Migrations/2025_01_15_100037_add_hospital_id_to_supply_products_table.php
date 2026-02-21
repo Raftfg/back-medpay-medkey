@@ -13,10 +13,12 @@ return new class extends Migration
         Schema::table('supply_products', function (Blueprint $table) {
             if (!Schema::hasColumn('supply_products', 'hospital_id')) {
                 $table->unsignedBigInteger('hospital_id')->nullable()->after('id');
-                $table->foreign('hospital_id')
-                      ->references('id')
-                      ->on('hospitals')
-                      ->onDelete('restrict');
+                if (Schema::hasTable('hospitals')) {
+                    $table->foreign('hospital_id')
+                          ->references('id')
+                          ->on('hospitals')
+                          ->onDelete('restrict');
+                }
             }
         });
 
@@ -36,7 +38,9 @@ return new class extends Migration
     {
         Schema::table('supply_products', function (Blueprint $table) {
             if (Schema::hasColumn('supply_products', 'hospital_id')) {
-                $table->dropForeign(['hospital_id']);
+                if (Schema::hasTable('hospitals')) {
+                    $table->dropForeign(['hospital_id']);
+                }
                 $table->dropColumn('hospital_id');
             }
         });

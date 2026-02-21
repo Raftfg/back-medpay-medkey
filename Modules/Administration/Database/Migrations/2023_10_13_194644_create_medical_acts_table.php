@@ -22,21 +22,29 @@ return new class extends Migration
             $table->unsignedBigInteger('services_id');
             $table->unsignedBigInteger('type_medical_acts_id');
             $table->timestamps();
-
-            // Contrainte de clé étrangère pour services_id
-            $table->foreign('services_id')
-                ->references('id')
-                ->on('services')
-                ->onUpdate('cascade')
-                ->onDelete('cascade'); // On cascade
-
-            // Contrainte de clé étrangère pour type_medical_acts_id
-            $table->foreign('type_medical_acts_id')
-                ->references('id')
-                ->on('type_medical_acts')
-                ->onUpdate('cascade')
-                ->onDelete('cascade'); // On cascade
         });
+
+        if (Schema::hasTable('medical_acts')) {
+            Schema::table('medical_acts', function (Blueprint $table) {
+                if (Schema::hasTable('services')) {
+                    // Contrainte de clé étrangère pour services_id
+                    $table->foreign('services_id')
+                        ->references('id')
+                        ->on('services')
+                        ->onUpdate('cascade')
+                        ->onDelete('cascade'); // On cascade
+                }
+
+                if (Schema::hasTable('type_medical_acts')) {
+                    // Contrainte de clé étrangère pour type_medical_acts_id
+                    $table->foreign('type_medical_acts_id')
+                        ->references('id')
+                        ->on('type_medical_acts')
+                        ->onUpdate('cascade')
+                        ->onDelete('cascade'); // On cascade
+                }
+            });
+        }
     }
 
     /**

@@ -15,10 +15,12 @@ return new class extends Migration
             // Ajouter la colonne services_id si elle n'existe pas déjà
             if (!Schema::connection('tenant')->hasColumn('rooms', 'services_id')) {
                 $table->unsignedBigInteger('services_id')->nullable();
-                $table->foreign('services_id')
-                    ->references('id')
-                    ->on('services')
-                    ->onDelete('set null');
+                if (Schema::connection('tenant')->hasTable('services')) {
+                    $table->foreign('services_id')
+                        ->references('id')
+                        ->on('services')
+                        ->onDelete('set null');
+                }
             }
         });
     }

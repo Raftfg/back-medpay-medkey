@@ -69,10 +69,18 @@ class ProvisionNewTenant implements ShouldQueue
         ]);
 
         try {
+            $selectedModules = match ($hospital->plan) {
+                // Plan gratuit : uniquement Patients, Mouvements, Pharmacie, Caisse
+                // Mapping technique: Patient, Movment, Stock (pharmacie), Payment (caisse)
+                'free' => ['Patient', 'Movment', 'Stock', 'Payment'],
+                default => null,
+            };
+
             $options = [
                 'create_database' => true,
                 'run_migrations' => true,
                 'activate_default_modules' => true,
+                'selected_modules' => $selectedModules,
                 'run_seeders' => true,
                 'force' => false,
                 // Important : ne pas échouer si la base existe déjà
@@ -87,6 +95,9 @@ class ProvisionNewTenant implements ShouldQueue
                 $hospital->email,
                 $hospital->phone
             );
+
+            // Envoyer le lien d'activation / création du mot de passe
+            $tenantAdminService->sendActivationEmail($hospital, $hospital->email);
 
             $hospital->refresh();
 

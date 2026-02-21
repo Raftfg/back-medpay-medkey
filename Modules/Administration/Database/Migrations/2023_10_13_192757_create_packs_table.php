@@ -23,20 +23,7 @@ return new class extends Migration
             $table->unsignedBigInteger('users_id');
             $table->boolean('is_synced')->default(0);
             $table->timestamp('deleted_at')->nullable();
-
-            $table->foreign('users_id')
-                ->references('id')
-                ->on('users')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
             $table->timestamps();
-
-            // Clé étrangère insurance_id
-            $table->foreign('insurances_id')
-                ->references('id')
-                ->on('insurances')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
 
             // Clé étrangère ProductType_id
             // $table->foreign('product_types_id')
@@ -45,6 +32,27 @@ return new class extends Migration
             //     ->onUpdate('cascade')
             //     ->onDelete('cascade');
         });
+
+        if (Schema::hasTable('packs')) {
+            Schema::table('packs', function (Blueprint $table) {
+                if (Schema::hasTable('users')) {
+                    $table->foreign('users_id')
+                        ->references('id')
+                        ->on('users')
+                        ->onUpdate('cascade')
+                        ->onDelete('cascade');
+                }
+
+                if (Schema::hasTable('insurances')) {
+                    // Clé étrangère insurance_id
+                    $table->foreign('insurances_id')
+                        ->references('id')
+                        ->on('insurances')
+                        ->onUpdate('cascade')
+                        ->onDelete('cascade');
+                }
+            });
+        }
     }
 
     /**

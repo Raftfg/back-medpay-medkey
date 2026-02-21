@@ -28,14 +28,18 @@ return new class extends Migration
 
 
             // Clé étrangère vers la table movements
-            $table->foreign('movments_id')
-            ->references('id')
-            ->on('movments')
-            ->onUpdate('cascade')
-            ->onDelete('cascade');
-
             $table->timestamps();
         });
+
+        if (Schema::hasTable('patient_movement_details') && Schema::hasTable('movments')) {
+            Schema::table('patient_movement_details', function (Blueprint $table) {
+                $table->foreign('movments_id')
+                    ->references('id')
+                    ->on('movments')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
+            });
+        }
     }
 
     /**

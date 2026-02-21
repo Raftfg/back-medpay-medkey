@@ -18,7 +18,6 @@ return new class extends Migration
             $table->decimal('price', 13, 2);
 
             $table->unsignedBigInteger('user_id')->index()->nullable(); // Store the ID of the user that is executing an action on the resource.
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null'); // Prevent the deletion of the line associated to a user when the user is deleted
             
             // Additional attributes
             $table->integer('is_synced')->default(0); // To know either the data is synchronized or not, defined as not synchronized by default.
@@ -26,6 +25,12 @@ return new class extends Migration
             $table->timestamp('deleted_at')->nullable(); // To apply soft delete.
             $table->timestamps();
         });
+
+        if (Schema::hasTable('room_options') && Schema::hasTable('users')) {
+            Schema::table('room_options', function (Blueprint $table) {
+                $table->foreign('user_id')->references('id')->on('users')->onDelete('set null'); // Prevent the deletion of the line associated to a user when the user is deleted
+            });
+        }
     }
 
     /**

@@ -21,10 +21,20 @@ return new class extends Migration
             $table->timestamp('date_remboursement');
             // Ajoutez d'autres colonnes si nécessaire
             $table->timestamp('deleted_at')->nullable();
-            $table->foreign('patient_id')->references('id')->on('patients')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
+
+        if (Schema::hasTable('remboursements')) {
+            Schema::table('remboursements', function (Blueprint $table) {
+                if (Schema::hasTable('patients')) {
+                    $table->foreign('patient_id')->references('id')->on('patients')->onDelete('cascade');
+                }
+
+                if (Schema::hasTable('users')) {
+                    $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+                }
+            });
+        }
     }
 
     /**

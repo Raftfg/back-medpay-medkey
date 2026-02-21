@@ -20,7 +20,6 @@ return new class extends Migration
 
             //Secondary keys
             $table->unsignedBigInteger('movement_id');
-            $table->foreign('movement_id')->references('id')->on('movments')->onDelete('cascade');
 
             //Additional attributes
             $table->unsignedBigInteger('user_id'); //Store the ID of the user that is executing an action on the resource.
@@ -29,6 +28,12 @@ return new class extends Migration
             $table->timestamp('deleted_at')->nullable(); //To apply soft delete.
             $table->timestamps();
         });
+
+        if (Schema::hasTable('sales') && Schema::hasTable('movments')) {
+            Schema::table('sales', function (Blueprint $table) {
+                $table->foreign('movement_id')->references('id')->on('movments')->onDelete('cascade');
+            });
+        }
     }
 
     /**

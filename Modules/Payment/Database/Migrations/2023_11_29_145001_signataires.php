@@ -22,9 +22,13 @@ return new class extends Migration
             $table->binary('signature')->nullable(); // Utilisation de BLOB pour stocker le contenu du fichier
             $table->timestamps();
             $table->softDeletes();
-    
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
         });
+
+        if (Schema::hasTable('signataires') && Schema::hasTable('users')) {
+            Schema::table('signataires', function (Blueprint $table) {
+                $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            });
+        }
         
     }
 

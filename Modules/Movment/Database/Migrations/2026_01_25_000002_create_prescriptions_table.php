@@ -18,18 +18,8 @@ return new class extends Migration
             $table->uuid()->unique();
             
             $table->unsignedBigInteger('patients_id');
-            $table->foreign('patients_id')
-                ->references('id')
-                ->on('patients')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
             
             $table->unsignedBigInteger('movments_id')->nullable();
-            $table->foreign('movments_id')
-                ->references('id')
-                ->on('movments')
-                ->onUpdate('cascade')
-                ->onDelete('set null');
             
             $table->unsignedBigInteger('clinical_observation_id')->nullable();
             
@@ -42,6 +32,26 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
+
+        if (Schema::hasTable('prescriptions')) {
+            Schema::table('prescriptions', function (Blueprint $table) {
+                if (Schema::hasTable('patients')) {
+                    $table->foreign('patients_id')
+                        ->references('id')
+                        ->on('patients')
+                        ->onUpdate('cascade')
+                        ->onDelete('cascade');
+                }
+
+                if (Schema::hasTable('movments')) {
+                    $table->foreign('movments_id')
+                        ->references('id')
+                        ->on('movments')
+                        ->onUpdate('cascade')
+                        ->onDelete('set null');
+                }
+            });
+        }
     }
 
     /**

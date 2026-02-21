@@ -27,14 +27,18 @@ return new class extends Migration
             $table->boolean('is_synced')->default(0);
             $table->timestamp('deleted_at')->nullable();
 
-            $table->foreign('users_id')
-                ->references('id')
-                ->on('users')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
-
             $table->timestamps();
         });
+
+        if (Schema::hasTable('insurances') && Schema::hasTable('users')) {
+            Schema::table('insurances', function (Blueprint $table) {
+                $table->foreign('users_id')
+                    ->references('id')
+                    ->on('users')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
+            });
+        }
     }
 
     /**

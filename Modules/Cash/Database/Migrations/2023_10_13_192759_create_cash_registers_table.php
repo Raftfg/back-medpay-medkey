@@ -35,8 +35,13 @@ return new class extends Migration
             $table->timestamp('deleted_at')->nullable();
             $table->boolean('is_synced')->default(0); // Défaut à 0
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade'); // Exemple de clé étrangère vers la table des utilisateurs (modifiez selon vos besoins).
         });
+
+        if (Schema::hasTable('cash_registers') && Schema::hasTable('users')) {
+            Schema::table('cash_registers', function (Blueprint $table) {
+                $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade'); // Exemple de clé étrangère vers la table des utilisateurs (modifiez selon vos besoins).
+            });
+        }
     }
 
     /**

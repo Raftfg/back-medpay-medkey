@@ -2,6 +2,7 @@
 
 namespace Modules\Acl\Http\Controllers\Api\V1;
 
+use App\Core\Models\Hospital;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
@@ -137,6 +138,17 @@ class AuthController extends \App\Http\Controllers\Api\V1\ApiController
         // ÉTAPE 9: Récupérer les informations de l'utilisateur
         $role = $user->roles->first();
         $permissions = $user->getAllPermissions()->pluck('name');
+        if ($hospital && ($hospital->plan === 'free')) {
+            $allowedPermissions = collect([
+                'voir_module_patient',
+                'voir_module_mouvement',
+                'voir_module_pharmacie',
+                'voir_module_caisse',
+            ]);
+            $permissions = $permissions->filter(
+                fn ($permissionName) => $allowedPermissions->contains(strtolower($permissionName))
+            )->values();
+        }
 
         // ÉTAPE 10: Log de connexion réussie
         Log::info('Connexion réussie', [
@@ -149,7 +161,9 @@ class AuthController extends \App\Http\Controllers\Api\V1\ApiController
         // ÉTAPE 11: Retourner les données
         $donnees = [
             'access_token' => $token,
-            'user' => $user,
+            'user' => array_merge($user->toArray(), [
+                'plan' => $hospital?->plan,
+            ]),
             'role' => $role,
             'permissions' => $permissions,
             'hospital' => $hospital, // Inclure les infos de l'hôpital
@@ -570,7 +584,10 @@ class AuthController extends \App\Http\Controllers\Api\V1\ApiController
                 
             if ($user != null) {
                 $user->password = Hash::make($request->password);
+                $user->must_change_password = false;
                 $user->save();
+
+                $this->markAccountValidationAsValidated();
                 
                 Log::info('Mot de passe réinitialisé avec succès', [
                     'user_id' => $user->id,
@@ -688,4 +705,31 @@ class AuthController extends \App\Http\Controllers\Api\V1\ApiController
     //         'message' => 'Email envoyé avec succès',
     //     ]);
     // }
+
+    private function markAccountValidationAsValidated(): void
+    {
+        try {
+            $hospital = \App\Services\TenantService::current();
+            if (! $hospital) {
+                return;
+            }
+
+            $coreHospital = Hospital::find($hospital->id);
+            if (! $coreHospital) {
+                return;
+            }
+
+            $state = is_array($coreHospital->setup_wizard_state) ? $coreHospital->setup_wizard_state : [];
+            $state['account_validation_status'] = 'validated';
+            $state['account_validated_at'] = now()->toIso8601String();
+
+            $coreHospital->update([
+                'setup_wizard_state' => $state,
+            ]);
+        } catch (\Throwable $e) {
+            Log::warning('Impossible de marquer la validation de compte onboarding', [
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
 }

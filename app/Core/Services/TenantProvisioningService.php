@@ -8,7 +8,7 @@ use App\Core\Services\TenantConnectionService;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
+use Laravel\Passport\ClientRepository;
 use Exception;
 
 /**
@@ -47,6 +47,7 @@ class TenantProvisioningService
             'create_database' => true,
             'run_migrations' => true,
             'activate_default_modules' => true,
+            'selected_modules' => null,
             'run_seeders' => config('tenant.provisioning.auto_seed', false),
             'force' => false,
             // Mode idempotent : ne pas lever d'erreur si la base existe déjà
@@ -71,13 +72,19 @@ class TenantProvisioningService
             // 2. Exécuter les migrations
             if ($options['run_migrations']) {
                 $this->runMigrations($hospital);
+                $this->ensureTenantOauthIsReady($hospital);
                 $results['migrations_executed'] = true;
+                $results['oauth_ready'] = true;
             }
 
             // 3. Activer les modules par défaut
             if ($options['activate_default_modules']) {
-                $defaultModules = config('tenant.provisioning.default_modules', 'Acl,Administration,Patient,Payment');
-                $modules = array_map('trim', explode(',', $defaultModules));
+                if (is_array($options['selected_modules']) && !empty($options['selected_modules'])) {
+                    $modules = array_values(array_unique(array_filter(array_map('trim', $options['selected_modules']))));
+                } else {
+                    $defaultModules = config('tenant.provisioning.default_modules', 'Acl,Administration,Patient,Payment');
+                    $modules = array_map('trim', explode(',', $defaultModules));
+                }
                 $this->activateModules($hospital, $modules);
                 $results['modules_activated'] = true;
                 $results['modules'] = $modules;
@@ -209,6 +216,86 @@ class TenantProvisioningService
         } catch (Exception $e) {
             Log::error("Erreur lors de l'exécution des migrations pour l'hôpital {$hospital->id}: " . $e->getMessage());
             throw new Exception("Erreur lors de l'exécution des migrations : " . $e->getMessage(), 0, $e);
+        } finally {
+            $this->tenantConnectionService->disconnect();
+        }
+    }
+
+    /**
+     * Garantit la disponibilité OAuth Passport dans la base tenant.
+     *
+     * - Vérifie la présence des tables oauth_*
+     * - Relance les migrations OAuth ACL si nécessaire
+     * - Crée un personal access client si absent
+     *
+     * @throws Exception
+     */
+    private function ensureTenantOauthIsReady(Hospital $hospital): void
+    {
+        $oauthMigrationPaths = [
+            'Modules/Acl/Database/Migrations/2016_06_01_000001_create_oauth_auth_codes_table.php',
+            'Modules/Acl/Database/Migrations/2016_06_01_000002_create_oauth_access_tokens_table.php',
+            'Modules/Acl/Database/Migrations/2016_06_01_000003_create_oauth_refresh_tokens_table.php',
+            'Modules/Acl/Database/Migrations/2016_06_01_000004_create_oauth_clients_table.php',
+            'Modules/Acl/Database/Migrations/2016_06_01_000005_create_oauth_personal_access_clients_table.php',
+        ];
+
+        $requiredTables = [
+            'oauth_auth_codes',
+            'oauth_access_tokens',
+            'oauth_refresh_tokens',
+            'oauth_clients',
+            'oauth_personal_access_clients',
+        ];
+
+        try {
+            $this->tenantConnectionService->connect($hospital);
+
+            $schema = DB::connection('tenant')->getSchemaBuilder();
+            $missing = array_values(array_filter(
+                $requiredTables,
+                fn (string $table): bool => !$schema->hasTable($table)
+            ));
+
+            if (!empty($missing)) {
+                foreach ($oauthMigrationPaths as $migrationPath) {
+                    Artisan::call('migrate', [
+                        '--database' => 'tenant',
+                        '--path' => $migrationPath,
+                        '--force' => true,
+                    ]);
+                }
+
+                // Revalidation stricte après tentative de remédiation
+                $schema = DB::connection('tenant')->getSchemaBuilder();
+                $missing = array_values(array_filter(
+                    $requiredTables,
+                    fn (string $table): bool => !$schema->hasTable($table)
+                ));
+
+                if (!empty($missing)) {
+                    throw new Exception(
+                        'Provisioning incomplet: tables OAuth manquantes dans tenant [' . implode(', ', $missing) . '].'
+                    );
+                }
+            }
+
+            $hasPersonalAccessClient = DB::connection('tenant')
+                ->table('oauth_personal_access_clients')
+                ->exists();
+
+            if (!$hasPersonalAccessClient) {
+                /** @var ClientRepository $clientRepository */
+                $clientRepository = app(ClientRepository::class);
+                $clientRepository->createPersonalAccessClient(
+                    null,
+                    "{$hospital->name} Personal Access Client",
+                    config('app.url')
+                );
+            }
+        } catch (Exception $e) {
+            Log::error("Erreur d'initialisation OAuth tenant pour l'hôpital {$hospital->id}: " . $e->getMessage());
+            throw new Exception("OAuth tenant non prêt : " . $e->getMessage(), 0, $e);
         } finally {
             $this->tenantConnectionService->disconnect();
         }

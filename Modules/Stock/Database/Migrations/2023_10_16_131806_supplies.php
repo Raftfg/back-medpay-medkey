@@ -23,8 +23,6 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->index()->nullable(); // Store the ID of the user that is executing an action on the resource.
 
             $table->foreign('stock_id')->references('id')->on('stocks')->onDelete('cascade');
-            // Prevent the deletion of the products associated to a user when the user is deleted
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
     
             // Additional attributes
             $table->integer('is_synced')->default(0); // To know either the data is synchronized or not, defined as not synchronized by default.
@@ -32,6 +30,13 @@ return new class extends Migration
             $table->timestamp('deleted_at')->nullable(); // To apply soft delete.
             $table->timestamps();
         });
+
+        if (Schema::hasTable('supplies') && Schema::hasTable('users')) {
+            Schema::table('supplies', function (Blueprint $table) {
+                // Prevent the deletion of the products associated to a user when the user is deleted
+                $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+            });
+        }
     }
 
     /**

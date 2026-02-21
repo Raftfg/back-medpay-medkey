@@ -13,10 +13,12 @@ return new class extends Migration
         Schema::table('pediatrie_records', function (Blueprint $table) {
             if (!Schema::hasColumn('pediatrie_records', 'hospital_id')) {
                 $table->unsignedBigInteger('hospital_id')->nullable()->after('id');
-                $table->foreign('hospital_id')
-                      ->references('id')
-                      ->on('hospitals')
-                      ->onDelete('restrict');
+                if (Schema::hasTable('hospitals')) {
+                    $table->foreign('hospital_id')
+                          ->references('id')
+                          ->on('hospitals')
+                          ->onDelete('restrict');
+                }
             }
         });
 
@@ -30,7 +32,9 @@ return new class extends Migration
     {
         Schema::table('pediatrie_records', function (Blueprint $table) {
             if (Schema::hasColumn('pediatrie_records', 'hospital_id')) {
-                $table->dropForeign(['hospital_id']);
+                if (Schema::hasTable('hospitals')) {
+                    $table->dropForeign(['hospital_id']);
+                }
                 $table->dropColumn('hospital_id');
             }
         });
